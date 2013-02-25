@@ -1,0 +1,267 @@
+@charset "UTF-8";
+body {
+    font: 90% Arial, Helvetica, sans-serif;
+    background: #FFFFFF;
+    margin: 0; /* it's good practice to zero the margin and padding of the body element to account for differing browser defaults */
+    padding: 0;
+    text-align: center; /* this centers the container in IE 5* browsers. The text is then set to the left aligned default in the #container selector */
+    color: #000000;
+}
+
+a:visited {
+    text-decoration: none;
+}
+
+.torchdoc a:link {
+    text-decoration: none;
+}
+
+.torchdoc a:hover {
+    color: #FF3300;
+    text-decoration: underline;
+}
+
+.torchdoc #menu {
+    width: 100%;
+    text-align: center;
+}
+
+.torchdoc #menu ul {
+    text-align: center;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style-position: inside;
+    list-style-type: none;
+}
+
+.torchdoc #menu li {
+    background: #DDDDDD;
+    text-align: center;
+    float: left;
+    margin: 0;
+    width: 140px;
+    padding: 2px 0;
+    border-bottom: #ccc solid 1px;
+}
+
+.torchdoc #menu a:hover {
+    color: #fefe0a;
+    
+}
+
+.torchdoc #menu li:hover {
+    background-color:#f68e1a;
+    color: #fefe0a;
+}
+
+.clearmenufloat {
+    clear:left;
+    height:0;
+    font-size: 1px;
+    line-height: 0px;
+}
+
+/* Tips for Elastic layouts
+   1. Since the elastic layouts overall sizing is based on the user's default fonts size, they are more unpredictable. Used correctly, they are also more accessible for those that need larger fonts size since the line length remains proportionate.
+   2. Sizing of divs in this layout are based on the 100% font size in the body element. If you decrease the text size overall by using a font-size: 80% on the body element or the #container, remember that the entire layout will downsize proportionately. You may want to increase the widths of the various divs to compensate for this.
+   3. If font sizing is changed in differing amounts on each div instead of on the overall design (ie: #sidebar1 is given a 70% font size and #contents is given an 85% font size), this will proportionately change each of the divs overall size. You may want to adjust based on your final font sizing.
+*/
+.torchdoc #container {
+    width: 700px;  /* this width will create a container that will fit in an 700px browser window if text is left at browser default font sizes */
+    background: #FFFFFF;
+    margin: 0 auto; /* the auto margins (in conjunction with a width) center the page */
+    text-align: left; /* this overrides the text-align: center on the body element. */
+}
+
+.torchdoc #header {
+    color: gray;
+    margin-top: 1em;
+    text-align: center;
+    border-top: #aaa solid 1px;
+    border-bottom: #aaa solid 1px;
+    background: #DDDDDD;
+    padding: 27px 0 0 0;  /* this padding matches the left alignment of the elements in the divs that appear beneath it. If an image is used in the #header instead of text, you may want to remove the padding. */
+    height: 48px;
+    background-image:url("torchlogo.png");
+    background-repeat: no-repeat;
+    background-position: 5px 5px;
+}
+.torchdoc #header h3 {
+    margin: 0; /* zeroing the margin of the last element in the #header div will avoid margin collapse - an unexplainable space between divs. If the div has a border around it, this is not necessary as that also avoids the margin collapse */
+    padding: 0 0; /* using padding instead of margin will allow you to keep the element away from the edges of the div */
+}
+.torchdoc #contents {
+    padding: 0 20px; /* remember that padding is the space inside the div box and margin is the space outside the div box */
+    background: #FFFFFF;
+}
+
+.torchdoc #footer-left {
+    margin: 0 0;
+    float: left;
+    width: 100%;
+    background:#DDDDDD;
+    font-size: 70%;
+    border-top: #aaa 1px solid;
+    border-bottom: #aaa 1px solid;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.torchdoc #footer-right {
+    margin: 0 0;
+    text-align: right;
+    float: right;
+    width: 50%;
+    background:#DDDDDD;
+    font-size: 70%;
+    border-top: #aaa 1px solid;
+    border-bottom: #aaa 1px solid;
+}
+
+.torchdoc #toc {
+    font-size: 70%;
+    width: 200px;
+    max-height: 70%;
+    overflow: auto;
+    position: fixed;
+    left: 0px;
+    border:1px solid #D3D3D3;
+    background-color: #F9F7F3;
+    padding:5px;
+    margin-right:10px;
+}
+
+.torchdoc #toc ul{
+    border:0px solid red;
+    margin-left:10px;
+    /*list-style:none;*/
+    padding:0px;
+    list-style-type:disc;
+}
+
+.torchdoc #toc li{
+    border:0px solid green;
+    margin-left:0px;
+    color:#0000FF;
+    cursor: pointer;
+    list-style-type:none;
+    padding-left:0px;
+}
+
+.clearfooterfloat {
+    clear:both;
+    height:0;
+    font-size: 1px;
+    line-height: 0px;
+}
+
+.torchdoc #subsections {
+    margin: 20px;
+    padding: 2px 20px; /* remember that padding is the space inside the div box and margin is the space outside the div box */
+    background:#DFFFD2;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-top-style: solid;
+    border-bottom-style: solid;
+    border-top-color: #009900;
+    border-bottom-color: #009900;
+}
+
+.torchdoc #subsections ol {
+    list-style-type: lower-roman;
+}
+
+.torchdoc #contents code {
+    background-color:#F9F7F3;
+    font-size:110%;
+}
+
+.torchdoc #contents {
+    text-align:justify;
+}
+.torchdoc #contents code.a:link {
+    background-color:#F9F7F3;
+    color:#FF0000;
+    text-decoration: none;
+    font-size:110%;
+}
+
+.torchdoc #navline {
+    font-size: 70%;
+    height: 21px;
+    padding: 1px 2px 2px 2px;
+    margin: 0 0 1em 0px;
+    background-color:#FFFDD9;
+    border-bottom: 1px solid #CFBCA9;
+}
+
+.torchdoc #navline #title {
+    vertical-align: middle;
+}
+
+.torchdoc #last-modified {
+    padding: 0.5em 0.5em;
+    font-size: 70%;
+    color:#666;
+}
+
+.torchdoc #contents h1 {
+    font-size: 120%;
+    color: ##111111;
+    border-bottom: 1px #ccc solid;
+    padding-bottom: 0;
+    margin-bottom: 1em;
+}
+
+.torchdoc #contents h2 {
+    font-size: 120%;
+    color: ##111111;
+    border-bottom: 1px #ccc dashed;
+    padding-bottom: 0;
+    margin-bottom: 1em;
+}
+
+.torchdoc #contents h3 {
+    font-size: 120%;
+    color: ##111111;
+    border-bottom: 1px #ccc dashed;
+    padding-bottom: 0;
+    margin-bottom: 1em;
+}
+
+.torchdoc #sf-logo {
+    padding: 0.5em 0;
+    margin: 0 0;
+    float: right;
+}
+
+.torchdoc #sf-logo img {
+    border: 0px;
+}
+
+#search {
+    float: right;
+    /* text-align: right; */
+}
+
+code {
+    font-size:110%; 
+}
+
+pre {
+    display: block;
+    background-color:#F9F7F3;
+    color:#000000;
+    border-top-width:1px;
+    border-top-color: #D3D3D3;
+    border-top-style: solid;
+    border-bottom-width:1px;
+    border-bottom-color: #D3D3D3;
+    border-bottom-style: solid;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 0px;
+    font-size:110%;
+    overflow: auto;
+}

@@ -1,0 +1,169 @@
+====== BLAS and LAPACK ======
+
+There are multiple BLAS and LAPACK libraries out there. Most Linux
+distributions come with pre-compiled BLAS or ATLAS libraries.
+**We strongly discourage you to use those libraries**. According to our experience,
+these libraries are slow. Things have been improved with recent ATLAS
+development versions, but they have still a hard time to catch up with Intel MKL
+or GotoBLAS/OpenBLAS implementations.
+
+We found that on Intel platforms,
+[[http://www.tacc.utexas.edu/tacc-projects/gotoblas2|GotoBLAS]]/[[https://github.com/xianyi/OpenBLAS|OpenBLAS]]
+or [[www.intel.com/software/products/mkl|Intel MKL]] implementations were
+the fastest. The advantage of GotoBLAS and OpenBLAS being that they are
+distributed with a BSD-like license. The choice is yours.
+
+===== Installing OpenBLAS =====
+
+[[http://www.tacc.utexas.edu/tacc-projects/gotoblas2|GotoBLAS]] has been
+extremely well hand-optimized by Kazushige Goto.  The project has been
+released under a BSD-like license. Unfortunately, it is not maintained
+anymore (at this time), but several forks have been released later. Our preference
+goes to [[https://github.com/xianyi/OpenBLAS|OpenBLAS]].
+
+We provide below simple instructions to install OpenBLAS.
+
+First get the latest OpenBLAS stable code:
+<file>
+git clone git://github.com/xianyi/OpenBLAS.git
+</file>
+
+You will need a Fortran compiler. On most Linux distributions, ''gfortran'' is available.
+For e.g., on Debian,
+<file>
+apt-get install gfortran
+</file>
+If you prefer, you can also install GCC 4.6 which also supports Fortran language.
+
+On FreeBSD, gfortran is not available, so please use GCC 4.6.
+<file>
+pkg_add -r gcc46
+</file>
+
+On MacOS X, you should install one gfortran package provided on
+[[http://gcc.gnu.org/wiki/GFortranBinaries|this GCC webpage]].
+
+You can now go into the OpenBlas directory, and just do:
+<file>
+make NO_AFFINITY=1 USE_OPENMP=1
+</file>
+OpenBLAS uses processor affinity to go faster. However, in general, on a
+computer shared between several users, this causes processes to fight for
+the same CPU. We thus disable it here with the ''NO_AFFINITY'' flag. We
+also use the ''USE_OPENMP'' flag, such that OpenBLAS uses OpenMP and not
+pthreads. This is important to avoid some confusion in the number of
+threads, as Torch7 uses OpenMP. Read OpenBLAS manual for more details.
+
+You can use ''CC'' and ''FC'' variables to control the C and Fortran compilers.
+
+On FreeBSD use 'gmake' instead of 'make'. You also have to specify the correct MD5 sum program
+You will probably want to use the following command line:
+<file>
+gmake NO_AFFINITY=1 USE_OPENMP=1 CC=gcc46 FC=gcc46 MD5SUM='md5 -q'
+</file>
+
+On MacOS X, you will also have to specify the correct MD5SUM program:
+<file>
+make NO_AFFINITY=1 USE_OPENMP=1 MD5SUM='md5 -q'
+</file>
+
+Be sure to specify MD5SUM correctly, otherwise OpenBLAS might not compile LAPACK properly.
+
+At the end of the compilation, you might want to do a 
+<file>
+make PREFIX=/your_installation_path/ install
+</file>
+to install OpenBLAS at a specific location. You might also want to keep it where you compiled it.
+
+Note that on MacOS X, the generated **dynamic** (''.dylib'') library does not contain LAPACK. Simply remove
+the dylib (keeping the archive ''.a'') such that LAPACK is correctly detected.
+
+==== CMake detection ====
+Make sure that CMake can find your OpenBLAS library. This can be done with
+<file>
+export CMAKE_LIBRARY_PATH=/your_installation_path/lib
+</file>
+before starting cmake command line. On some platforms, the ''gfortran''
+library might also be not found. In this case, add the path to the
+''gfortran'' library into ''CMAKE_LIBRARY_PATH''.
+
+===== Installing Intel MKL =====
+
+[[www.intel.com/software/products/mkl|Intel MKL]] is a closed-source
+library //sold// by Intel. Follow Intel instructions to unpack MKL. Then make
+sure the libraries relevant for your system (e.g. ''em64t'' if you are on a
+64 bits distribution) are available in your ''LD_LIBRARY_PATH''. Both BLAS
+and LAPACK interfaces are readily included in MKL.
+
+==== CMake detection ====
+Make sure that CMake can find your libraries. This can be done with something like
+<file>
+export CMAKE_INCLUDE_PATH=/path/to/mkl/include
+export CMAKE_LIBRARY_PATH=/path/to/mkl/lib/intel64:/path/to/mkl/compiler/lib/intel64
+export LD_LIBRARY_PATH=$CMAKE_LIBRARY_PATH:$LD_LIBRARY_PATH
+</file>
+before starting cmake command line.
+
+Of course, you have to adapt ''/path/to/mkl'' and ''/path/to/mkl/compiler'' to your installation setup. In the above
+case, we also chose the ''intel64'' libraries, which might not be what you need.
+
+A common mistake is to forgot the path to Intel compiler libraries. CMake
+will not be able to detect threaded libraries in that case.
+
+===== CMake and BLAS/LAPACK =====
+
+As mentioned above, you should make sure CMake can find your
+libraries. Carefully watch for libraries found (or not found) in the output
+generated by cmake.
+
+For example, if you see something like:
+<file>
+-- Checking for [openblas - gfortran]
+--   Library openblas: /Users/ronan/open/lib/libopenblas.dylib
+--   Library gfortran: BLAS_gfortran_LIBRARY-NOTFOUND
+</file>
+It means CMake found the OpenBLAS library, but could not make it work
+properly because it did not find the required gfortran library. Make sure
+that CMake can find all the required libraries through CMAKE_LIBRARY_PATH.
+If your libraries are present in LD_LIBRARY_PATH, it should be fine too.
+
+The locations to search for are generally as follows.
+<file>
+/usr/lib/gcc/x86_64-linux-gnu/
+/usr/lib/gcc/x86_64-redhat-linux/4.4.4/
+</file>
+These are a bit crytic, but look around and find the path that contains libgfortran.so. And, use
+<file>
+export CMAKE_LIBRARY_PATH=...
+</file>
+before calling cmake to build torch, this makes sure that OpenBLAS will be found.
+
+
+Note that CMake will try to detect various BLAS/LAPACK libraries. If you have several libraries
+installed on your computer (say Intel MKL and OpenBLAS), or if you want to avoid all these checks,
+you might want to select the one you want to use with:
+<file>
+cd torch7/build
+cmake .. -DWITH_BLAS=open
+</file>
+Valid options for WITH_BLAS are ''mkl'' (Intel MKL), ''open'' (OpenBLAS),
+''goto'' (GotoBlas2), ''acml'' (AMD ACML), ''atlas'' (ATLAS),
+''accelerate'' (Accelerate framework on MacOS X), ''vecLib'' (vecLib
+framework on MacOS X) or ''generic''.
+
+Note again that the best choices are probably ''open'' or ''mkl''. For
+consistency reasons, CMake will try to find the corresponding LAPACK
+package (and does not allow mixing up different BLAS/LAPACK versions).
+
+===== GotoBLAS/OpenBLAS and MKL threads =====
+
+GotoBLAS/OpenBLAS and MKL are multi-threaded libraries.
+With MKL, the number of threads can be controlled by
+<file>
+export OMP_NUM_THREADS=N
+</file>
+where N is an integer.
+
+Beware that running small problems on a large number of threads reduce
+performance! Multi-threading should be enable only for large-scale
+computations.

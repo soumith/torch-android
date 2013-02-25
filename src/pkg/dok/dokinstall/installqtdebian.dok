@@ -1,0 +1,31 @@
+====== Appendix: Installing QT 4.4 ======
+
+The version 4.4 of QT might not be available on old distributions. Ubuntu
+provides QT 4.4 backports for Hardy but not for Gutsy.  Debian testing and
+unstable contain QT 4.4 but not the Debian stable. If your distribution
+does not provide QT 4.4, you will have to compile it yourself. This is easily
+done on Debian and Ubuntu with the following:
+<file>
+# You will need these packages
+sudo apt-get install wget fakeroot dpkg-dev
+mkdir qt
+cd qt
+wget http://ml.nec-labs.com/download/qt/qt4-x11_4.4.0-4.dsc
+wget http://ml.nec-labs.com/download/qt/qt4-x11_4.4.0.orig.tar.gz
+wget http://ml.nec-labs.com/download/qt/qt4-x11_4.4.0-4.diff.gz
+dpkg-source -x qt4-x11_4.4.0-4.dsc
+cd qt4-x11-4.4.0
+dpkg-buildpackage -rfakeroot
+</file>
+The command ''dpkg-buildpackage'' might complain for some unmet
+dependencies. Install them with ''apt-get install'', and then execute the
+command again. The compilation takes around two hours on a recent computer.
+You can then install all the packages it created with:
+<file>
+cd ..
+sudo dpkg -i *.deb
+</file>
+For distributions not Debian-based, please refer to the documentation for compiling
+packages. You might also be able to find QT 4.4 binary packages on the web.
+
+We provide ourselves binary packages for [[http://ml.nec-labs.com/download/qt/binaries/|some architecture]].

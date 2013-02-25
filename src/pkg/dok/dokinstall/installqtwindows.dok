@@ -1,0 +1,19 @@
+====== Appendix: Install QT 4.4 under Windows ======
+
+Download [[http://trolltech.com/downloads/opensource/appdev/windows-cpp|QT 4.4 sources for Windows]]
+on Trolltech website.
+
+Unzip then and move the directory to ''C:\Qt''.
+
+Set the system ''PATH'' such that it contains ''C:\Qt\bin''. It can be done by
+opening the Control Panel, then System, then go to Advanced and then
+Environment Variables. Make sure you do that before compilation. The Torch
+configuration procedure also needs it for finding QT.
+
+Considering you have Microsoft Visual Studio, you can then do:
+<file>
+cd c:\Qt
+configure -release
+nmake
+</file>
+Given the size of QT, allow few hours for compilation.
