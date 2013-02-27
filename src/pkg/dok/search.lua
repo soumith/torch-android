@@ -4,8 +4,8 @@
 --------------------------------------------------------------------------------
 local entries = {}
 
-paths.install_dok = paths.concat(paths.install_html, '..', 'dok')
-paths.install_dokmedia = paths.concat(paths.install_html, '..', 'dokmedia')
+-- paths.install_dok = paths.concat(paths.install_html, '..', 'dok')
+-- paths.install_dokmedia = paths.concat(paths.install_html, '..', 'dokmedia')
 
 local function html2entries(html, package, file)
    local dnext = html:gfind('<div.->(.-)</div>')
