@@ -31,13 +31,13 @@ mkdir -p share/lua/5.1/nn
 cp -r src/3rdparty/nn/*.lua share/lua/5.1/nn/
 
 mkdir -p share/lua/5.1/image
-cp -r src/3rdparty/nn/*.lua share/lua/5.1/image/
+cp -r src/3rdparty/image/*.lua share/lua/5.1/image/
 
 mkdir -p share/lua/5.1/nnx
-cp -r src/3rdparty/nn/*.lua share/lua/5.1/nnx/
+cp -r src/3rdparty/nnx/*.lua share/lua/5.1/nnx/
 
 mkdir -p share/lua/5.1/imgraph
-cp -r src/3rdparty/nn/*.lua share/lua/5.1/imgraph/
+cp -r src/3rdparty/imgraph/*.lua share/lua/5.1/imgraph/
 
 #remove cmake files in framework
 rm -rf share/cmake
