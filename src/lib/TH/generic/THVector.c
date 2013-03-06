@@ -81,4 +81,16 @@ static inline void THVector_(mul)(real *y, const real *x, const long n)
     y[i] *= x[i];
 }
 
+static inline void THVector_(conv1d)(real *y, real *x, real *c, real a, const long n, const long cn, unsigned char reverse){
+    long i;
+    if (reverse==0){
+        for(i = 0; i < cn; i++)
+            THVector_(add)(y, (x + i), (c[i]*a), n);
+    }
+    else{
+        for(i = 0; i < cn; i++)
+            THVector_(add)(y, (x + i), (c[-i]*a), n);
+    }
+}
+
 #endif

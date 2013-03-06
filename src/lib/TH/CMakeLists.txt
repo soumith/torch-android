@@ -8,7 +8,7 @@ SET(hdr
 SET(src 
   THGeneral.c THStorage.c THTensor.c THBlas.c THLapack.c
   THLogAdd.c THRandom.c
-  THFile.c THDiskFile.c THMemoryFile.c)
+  THFile.c THDiskFile.c THApkFile.c THMemoryFile.c)
 
 SET(src ${src} ${hdr})
 
@@ -22,6 +22,11 @@ IF(UNIX)
 ENDIF(UNIX)
 
 ADD_LIBRARY(TH ${src})
+
+IF(ANDROID)
+  INCLUDE_DIRECTORIES("$ENV{ANDROID_NDK}/platforms/android-14/arch-arm/usr/include")
+  MESSAGE(STATUS "ANDROID NDK Include FOUND AT $ENV{ANDROID_NDK}/platforms/android-14/arch-arm/usr/include")
+ENDIF(ANDROID)
 
 FIND_PACKAGE(BLAS)
 IF(BLAS_FOUND)
@@ -83,6 +88,7 @@ INSTALL(FILES
   TH.h
   THBlas.h
   THDiskFile.h
+  THApkFile.h
   THFile.h
   THFilePrivate.h
   ${CMAKE_CURRENT_BINARY_DIR}/THGeneral.h

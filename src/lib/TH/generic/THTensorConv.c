@@ -35,20 +35,30 @@ TH_API void THTensor_(validXCorr2Dptr)(real *r_,
         *r_++ += alpha*sum;
       }
     }
-
+  } else if (kc < 3 || oc < 32){
+      for(yy = 0; yy < or; yy++) {
+          real *pi_ = t_ + yy*sr*ic;
+          real *pw_ = k_;
+          for (ky = 0; ky < kr; ky++) {
+              real *pis_ = pi_;
+              for (kx = 0; kx < kc; kx++) {
+                  THVector_(add)(r_, pis_, alpha*pw_[kx], oc);
+                  pis_++;
+              }
+              pi_ += ic; /* next input line */
+              pw_ += kc; /* next mask line */
+          }
+          r_ += oc;
+      }
   } else {
     // SSE-based convolution
     for(yy = 0; yy < or; yy++) {
       real *pi_ = t_ + yy*sr*ic;
       real *pw_ = k_;
       for (ky = 0; ky < kr; ky++) {
-        real *pis_ = pi_;
-        for (kx = 0; kx < kc; kx++) {
-          THVector_(add)(r_, pis_, alpha*pw_[kx], oc);
-          pis_++;
-        }
-        pi_ += ic; /* next input line */
-        pw_ += kc; /* next mask line */
+          THVector_(conv1d)(r_, pi_, pw_, alpha, oc, kc, 0);
+          pi_ += ic; /* next input line */
+          pw_ += kc; /* next mask line */
       }
       r_ += oc;
     }
@@ -88,20 +98,30 @@ TH_API void THTensor_(validConv2Dptr)(real *r_,
         *r_++ += alpha*sum;
       }
     }
-
+  } else if (kc < 3 || oc < 32){
+      for(yy = 0; yy < or; yy++) {
+      real *pw_ = k_ + kr*kc - 1;
+      real *pi_ = t_ + yy*sr*ic;
+      for (ky = 0; ky < kr; ky++) {
+          real *pis_ = pi_;
+          for (kx = 0; kx < kc; kx++) {
+              THVector_(add)(r_, pis_, alpha*pw_[-kx], oc);
+              pis_++;
+          }
+          pi_ += ic; /* next input line */
+          pw_ -= kc; /* next mask line */
+      }
+      r_ += oc;
+      }
   } else {
     // SSE-based convolution
     for(yy = 0; yy < or; yy++) {
       real *pw_ = k_ + kr*kc - 1;
       real *pi_ = t_ + yy*sr*ic;
       for (ky = 0; ky < kr; ky++) {
-        real *pis_ = pi_;
-        for (kx = 0; kx < kc; kx++) {
-          THVector_(add)(r_, pis_, alpha*pw_[-kx], oc);
-          pis_++;
-        }
-        pi_ += ic; /* next input line */
-        pw_ -= kc; /* next mask line */
+          THVector_(conv1d)(r_, pi_, pw_, alpha, oc, kc, 1);
+          pi_ += ic; /* next input line */
+          pw_ -= kc; /* next mask line */
       }
       r_ += oc;
     }
@@ -761,7 +781,7 @@ void THTensor_(conv2DRevgerm)(THTensor *r_, real beta, real alpha, THTensor *t_,
   real *ptr_output = output_data + k*nInputPlane*nOutputCols*nOutputRows + i*nOutputCols*nOutputRows;
   /* get input */
   real *ptr_input = input_data + p*istride0 + i*istride1;
-  
+
   /* do image, kernel convolution */
   THTensor_(validXCorr2DRevptr)(ptr_output,
            alpha,
@@ -1149,7 +1169,7 @@ void THTensor_(conv2Dmm)(THTensor *r_, real beta, real alpha, THTensor *t_, THTe
   real *ptr_weight = weight_data + k*kstride0 + i*kstride1;
   /* get input */
   real *ptr_input = input_data + p*nInputPlane*nInputRows*nInputCols + i*nInputRows*nInputCols;
-  
+
   /* do image, kernel convolution */
   if (*vf == 'F')
     if (*xc == 'X')

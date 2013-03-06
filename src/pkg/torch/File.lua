@@ -250,10 +250,15 @@ function torch.save(filename, object, mode)
    file:close()
 end
 
-function torch.load(filename, mode)
+function torch.load(filename, mode, source)
    mode = mode or 'binary'
-   local file = torch.DiskFile(filename, 'r')
-   file[mode](file)
+   local file = nil
+   if source and source == 'apk' then
+      file = torch.ApkFile(filename, 'r')
+   else
+      file = torch.DiskFile(filename, 'r')
+      file[mode](file)
+   end
    local object = file:readObject()
    file:close()
    return object

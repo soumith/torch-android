@@ -5,6 +5,7 @@ extern void torch_utils_init(lua_State *L);
 extern void torch_random_init(lua_State *L);
 extern void torch_File_init(lua_State *L);
 extern void torch_DiskFile_init(lua_State *L);
+extern void torch_ApkFile_init(lua_State *L);
 extern void torch_MemoryFile_init(lua_State *L);
 extern void torch_PipeFile_init(lua_State *L);
 extern void torch_Timer_init(lua_State *L);
@@ -84,6 +85,7 @@ DLL_EXPORT int luaopen_libtorch(lua_State *L)
 
   torch_Timer_init(L);
   torch_DiskFile_init(L);
+  torch_ApkFile_init(L);
   torch_PipeFile_init(L);
   torch_MemoryFile_init(L);
 
