@@ -5,6 +5,7 @@ export ANDROID_NDK_TOOLCHAIN_ROOT=/usr/local/Cellar/android-ndk/r8d
 ####################################################
 # You do not need to modify anything below this line
 ####################################################
+export ANDROID_NDK=$ANDROID_NDK_TOOLCHAIN_ROOT
 INSTALL_DIR=`pwd`
 cd src
 rm -f build/CMakeCache.txt
