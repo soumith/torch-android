@@ -1,6 +1,6 @@
 
 # Modify this variable to point to your android ndk root
-export ANDROID_NDK_TOOLCHAIN_ROOT=/usr/local/Cellar/android-ndk/r8d
+export ANDROID_NDK_TOOLCHAIN_ROOT=/usr/local/Cellar/android-ndk/r8e
 
 ####################################################
 # You do not need to modify anything below this line

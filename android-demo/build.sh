@@ -1,8 +1,10 @@
+android update project --path .
 ndk-build
 if [ $? -ne 0 ]; then
     exit
 fi
 rm -rf assets/lua/*
+mkdir -p assets/lua/share
 cp -r ../share assets/lua/share
 ant debug
 if [ $? -ne 0 ]; then
