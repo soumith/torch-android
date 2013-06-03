@@ -33,9 +33,9 @@ for kernel_sz=1,16 do
    print('-------------------------------------------------------------------------------------------')
    print('Input Size: ' .. in_planes .. 'x' .. imsz_x .. 'x' .. imsz_y
 	 .. '\t\tKernel Size: ' .. kernel_sz .. 'x' .. kernel_sz .. '\t\tOutput Planes:' .. out_planes)
-	 print('Time taken (in seconds): ' .. (tend-tstart))
-	 numops = in_planes*kernel_sz*kernel_sz*out_planes*(imsz_x-kernel_sz+1)*(imsz_y-kernel_sz+1)*num_ops
-	 print('GOps:' .. numops / 1e9)
-	 print('Gops/s: ' .. (  numops/( (tend-tstart) * 1e9)))
-	 print('-------------------------------------------------------------------------------------------')
+   print('Time taken (in seconds): ' .. (tend-tstart))
+   total_ops = in_planes*kernel_sz*kernel_sz*out_planes*(imsz_x-kernel_sz+1)*(imsz_y-kernel_sz+1)*num_ops
+   print('GOps:' .. total_ops / 1e9)
+   print('Gops/s: ' .. (  total_ops/( (tend-tstart) * 1e9)))
+   print('-------------------------------------------------------------------------------------------')
 end
