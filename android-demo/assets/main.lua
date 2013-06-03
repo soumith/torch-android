@@ -3,6 +3,8 @@
 -- Copyright (C) 2013 Soumith Chintala
 
 require 'torch'
+require 'nnx'
+require 'dok'
 require 'image'
 
 function demoluafn()
@@ -12,7 +14,28 @@ function demoluafn()
 end
 
 print("Hello from Lua")
-a=torch.ones(3,100,100)
-print("Created a torch Tensor " .. " of size: " ..
-      a:size(1) .. 'x' .. a:size(2) .. 'x' .. a:size(3) ..
-      " having a sum of " .. a:sum())
+
+torch.setdefaulttensortype('torch.FloatTensor')
+-- Doing a small benchmark of the convolution module
+in_planes = 1
+out_planes = 1
+imsz_x = 640
+imsz_y = 480
+num_ops = 2 -- 2 ops, i.e one for multiply and one for accumulate
+
+test_tensor = torch.rand(in_planes,imsz_x,imsz_y)
+
+for kernel_sz=1,16 do
+   local model = nn.SpatialConvolution(out_planes,in_planes,kernel_sz,kernel_sz)
+   tstart = os.clock()
+   output1 = model:forward(test_tensor)
+   tend = os.clock()
+   print('-------------------------------------------------------------------------------------------')
+   print('Input Size: ' .. in_planes .. 'x' .. imsz_x .. 'x' .. imsz_y
+	 .. '\t\tKernel Size: ' .. kernel_sz .. 'x' .. kernel_sz .. '\t\tOutput Planes:' .. out_planes)
+	 print('Time taken (in seconds): ' .. (tend-tstart))
+	 numops = in_planes*kernel_sz*kernel_sz*out_planes*(imsz_x-kernel_sz+1)*(imsz_y-kernel_sz+1)*num_ops
+	 print('GOps:' .. numops / 1e9)
+	 print('Gops/s: ' .. (  numops/( (tend-tstart) * 1e9)))
+	 print('-------------------------------------------------------------------------------------------')
+end
