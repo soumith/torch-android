@@ -11,7 +11,7 @@ cd src
 rm -f build/CMakeCache.txt
 mkdir -p build
 cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/android.toolchain.cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DANDROID_STL=none -DARM_TARGETS="armeabi-v7a with NEON" -DNEON_FOUND=true
+cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/android.toolchain.cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DANDROID_STL=none -DARM_TARGETS="armeabi-v7a with NEON" -DNEON_FOUND=true 
 make install
 cd ../../
 
