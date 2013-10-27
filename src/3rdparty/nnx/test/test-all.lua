@@ -75,6 +75,44 @@ function nnxtest.SpatialMaxPooling()
    mytester:asserteq(berr, 0, torch.typename(module) .. ' - i/o backward err ')
 end
 
+local function template_SpatialReSamplingEx(up, mode)
+   for iTest = 1,3 do
+      local nDims = math.random(2,6)
+      local dims = torch.LongStorage(nDims)
+      for i = 1,nDims do
+	 dims[i] = math.random(5,20/nDims)
+      end
+      local xratio, yratio
+      if up then
+	 xratio = torch.uniform(1.5, 10)
+	 yratio = torch.uniform(1.5, 10)
+      else
+	 xratio = torch.uniform(0.41, 0.7)
+	 yratio = torch.uniform(0.41, 0.7)
+      end
+      local ydim = math.random(1,nDims-1)
+      local xdim = ydim+1
+      local owidth_ = math.floor(dims[xdim]*xratio+0.5)
+      local oheight_ = math.floor(dims[ydim]*yratio+0.5)
+      local module = nn.SpatialReSamplingEx({owidth=owidth_, oheight=oheight_,
+					     xDim=xdim, yDim = ydim, mode=mode})
+      local input = torch.rand(dims)
+      
+      local err = nn.Jacobian.testJacobian(module, input)
+      mytester:assertlt(err, precision, 'error on state ')
+      
+      local ferr, berr = nn.Jacobian.testIO(module, input)
+      mytester:asserteq(ferr, 0, torch.typename(module) .. ' - i/o forward err ')
+      mytester:asserteq(berr, 0, torch.typename(module) .. ' - i/o backward err ')
+   end
+end
+
+function nnxtest.SpatialReSamplingEx1() template_SpatialReSamplingEx(true , 'simple'  ) end
+function nnxtest.SpatialReSamplingEx2() template_SpatialReSamplingEx(false, 'simple'  ) end
+function nnxtest.SpatialReSamplingEx3() template_SpatialReSamplingEx(false, 'average' ) end
+function nnxtest.SpatialReSamplingEx4() template_SpatialReSamplingEx(true , 'bilinear') end
+function nnxtest.SpatialReSamplingEx5() template_SpatialReSamplingEx(false, 'bilinear') end
+
 function nnxtest.SpatialUpSampling()
    local fanin = math.random(1,4)
    local sizex = math.random(1,4)

@@ -8,7 +8,7 @@
 -- Authors: Clement Farabet, Benoit Corda
 --------------------------------------------------------------------------------
 
-local DataSetLabelMe = torch.class('DataSetLabelMe')
+local DataSetLabelMe = torch.class('nn.DataSetLabelMe')
 
 local path_images = 'Images'
 local path_annotations = 'Annotations'
@@ -55,21 +55,20 @@ function DataSetLabelMe:__init(...)
    print('<DataSetLabelMe> loading LabelMe dataset from '..self.path)
    for folder in paths.files(paths.concat(self.path,path_images)) do
       if folder ~= '.' and folder ~= '..' then
-    -- allowing for less nesting in the data set preparation [MS]
-    if sys.filep(paths.concat(self.path,path_images,folder)) then 
-       self:getsizes('./',folder)
-    else
-       -- loop though nested folders
-       for file in paths.files(paths.concat(self.path,path_images,folder)) do
+         -- allowing for less nesting in the data set preparation [MS]
+         if sys.filep(paths.concat(self.path,path_images,folder)) then 
+            self:getsizes('./',folder)
+         else
+            -- loop though nested folders
+            for file in paths.files(paths.concat(self.path,path_images,folder)) do
 
-          if file ~= '.' and file ~= '..' then
-        self:getsizes(folder,file)
-          end
-       end
-    end
+               if file ~= '.' and file ~= '..' then
+                  self:getsizes(folder,file)
+               end
+            end
+         end
       end
    end
-
 
    -- nb samples: user defined or max
    self.nbRawSamples = self.nbRawSamples or #self.rawdata
@@ -91,10 +90,10 @@ function DataSetLabelMe:__init(...)
    local maxXY = math.max(self.maxX, self.maxY)
    if not self.rawSampleMaxSize then
       if self.rawSampleSize then
-    self.rawSampleMaxSize = 
-       math.max(self.rawSampleSize.w,self.rawSampleSize.h)
+         self.rawSampleMaxSize = 
+         math.max(self.rawSampleSize.w,self.rawSampleSize.h)
       else
-    self.rawSampleMaxSize = maxXY
+         self.rawSampleMaxSize = maxXY
       end
    end
    if maxXY < self.rawSampleMaxSize then
@@ -103,9 +102,8 @@ function DataSetLabelMe:__init(...)
 
    -- some info
    if self.verbose then
-      print(self)
+      print(tostring(self))
    end
-
 
    -- sampling mode
    if self.samplingMode == 'equal' or self.samplingMode == 'random' then
@@ -132,8 +130,6 @@ function DataSetLabelMe:__init(...)
       error('ERROR <DataSetLabelMe> unknown sampling mode')
    end
 
-
-
    -- preload ?
    if self.preloadSamples then
       self:preload()
@@ -153,7 +149,7 @@ function DataSetLabelMe:getsizes(folder,file)
       size_c, size_y, size_x = image.getPNGsize(imgf)
    elseif file:find('.mat$') then
       if not xrequire 'mattorch' then 
-    xerror('<DataSetLabelMe> mattorch package required to handle MAT files')
+         xerror('<DataSetLabelMe> mattorch package required to handle MAT files')
       end
       local loaded = mattorch.load(imgf)
       for _,matrix in pairs(loaded) do loaded = matrix; break end
@@ -167,9 +163,9 @@ function DataSetLabelMe:getsizes(folder,file)
    end
 
    table.insert(self.rawdata, {imgfile=imgf,
-                maskfile=maskf,
-                annotfile=annotf,
-                size={size_c, size_y, size_x}})
+   maskfile=maskf,
+   annotfile=annotf,
+   size={size_c, size_y, size_x}})
 end
 
 function DataSetLabelMe:size()
@@ -260,7 +256,7 @@ function DataSetLabelMe:__index__(key)
       if self.labelGenerator then
          -- call user function to generate sample+label
          local ret = self:labelGenerator(full_sample, full_mask, sample, mask,
-                                         ctr_target, ctr_x, ctr_y, box_x, box_y, box_size)
+         ctr_target, ctr_x, ctr_y, box_x, box_y, box_size)
          return ret, true
 
       elseif self.labelType == 'center' then
@@ -335,7 +331,7 @@ function DataSetLabelMe:loadSample(index)
          image.scale(mask_loaded, self.currentMask, 'simple')
 
       elseif self.rawSampleMaxSize and (self.rawSampleMaxSize < img_loaded:size(3)
-                                     or self.rawSampleMaxSize < img_loaded:size(2)) then
+         or self.rawSampleMaxSize < img_loaded:size(2)) then
          -- resize to fit in bounding box
          local w,h
          if img_loaded:size(3) >= img_loaded:size(2) then
@@ -375,8 +371,8 @@ function DataSetLabelMe:preload(saveFile)
    if self.cacheFile
       and paths.filep(paths.concat(self.path,self.cacheFile..'-samples')) then
       print('<DataSetLabelMe> retrieving saved samples from :'
-            .. paths.concat(self.path,self.cacheFile..'-samples')
-         .. ' [delete file to force new scan]')
+      .. paths.concat(self.path,self.cacheFile..'-samples')
+      .. ' [delete file to force new scan]')
       local file = torch.DiskFile(paths.concat(self.path,self.cacheFile..'-samples'), 'r')
       file:binary()
       self.preloaded = file:readObject()
@@ -404,7 +400,7 @@ function DataSetLabelMe:preload(saveFile)
    -- if cache file given, serialize list of tags to it
    if self.cacheFile then
       print('<DataSetLabelMe> saving samples to cache file: '
-            .. paths.concat(self.path,self.cacheFile..'-samples'))
+      .. paths.concat(self.path,self.cacheFile..'-samples'))
       local file = torch.DiskFile(paths.concat(self.path,self.cacheFile..'-samples'), 'w')
       file:binary()
       file:writeObject(self.preloaded)
@@ -426,7 +422,7 @@ function DataSetLabelMe:parseMask(existing_tags)
       -- make sure each tag list is large enough to hold the incoming data
       for i = 1,self.nbClasses do
          if ((tags[i].size + (self.rawSampleMaxSize*self.rawSampleMaxSize*3)) >
-          tags[i].data:size()) then
+            tags[i].data:size()) then
             tags[i].data:resize(tags[i].size+(self.rawSampleMaxSize*self.rawSampleMaxSize*3),true)
          end
       end
@@ -440,9 +436,9 @@ function DataSetLabelMe:parseMask(existing_tags)
    local y_start = math.ceil(self.patchSize/2)
    local y_end = mask:size(1) - math.ceil(self.patchSize/2)
    mask.nn.DataSetLabelMe_extract(tags, mask, 
-                                  x_start, x_end, 
-                                  y_start, y_end, self.currentIndex,
-                                  filter.ratio, filter.size, filter.step)
+   x_start, x_end, 
+   y_start, y_end, self.currentIndex,
+   filter.ratio, filter.size, filter.step)
    return tags
 end
 
@@ -450,7 +446,7 @@ function DataSetLabelMe:parseAllMasks(saveFile)
    -- if cache file exists, just retrieve tags from it
    if self.cacheFile and paths.filep(paths.concat(self.path,self.cacheFile..'-tags')) then
       print('<DataSetLabelMe> retrieving saved tags from :' .. paths.concat(self.path,self.cacheFile..'-tags')
-         .. ' [delete file to force new scan]')
+      .. ' [delete file to force new scan]')
       local file = torch.DiskFile(paths.concat(self.path,self.cacheFile..'-tags'), 'r')
       file:binary()
       self.tags = file:readObject()
@@ -460,8 +456,8 @@ function DataSetLabelMe:parseAllMasks(saveFile)
    -- parse tags, long operation
    print('<DataSetLabelMe> parsing all masks to generate list of tags')
    print('<DataSetLabelMe> WARNING: this operation could allocate up to '..
-         math.ceil(self.nbRawSamples*self.rawSampleMaxSize*self.rawSampleMaxSize*
-                   3*2/1024/1024)..'MB')
+   math.ceil(self.nbRawSamples*self.rawSampleMaxSize*self.rawSampleMaxSize*
+   3*2/1024/1024)..'MB')
    self.tags = nil
    for i = 1,self.nbRawSamples do
       xlua.progress(i,self.nbRawSamples)
@@ -490,12 +486,12 @@ end
 function DataSetLabelMe:display(...)
    -- check args
    local _, title, samples, zoom = xlua.unpack(
-      {...},
-      'DataSetLabelMe.display',
-      'display masks, overlayed on dataset images',
-      {arg='title', type='string', help='window title', default='DataSetLabelMe'},
-      {arg='samples', type='number', help='number of samples to display', default=50},
-      {arg='zoom', type='number', help='zoom', default=0.5}
+   {...},
+   'DataSetLabelMe.display',
+   'display masks, overlayed on dataset images',
+   {arg='title', type='string', help='window title', default='DataSetLabelMe'},
+   {arg='samples', type='number', help='number of samples to display', default=50},
+   {arg='zoom', type='number', help='zoom', default=0.5}
    )
 
    -- require imgraph package to handle segmentation colors

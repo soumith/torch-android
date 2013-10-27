@@ -8,7 +8,7 @@
 -- Authors: Clement Farabet, Benoit Corda
 --------------------------------------------------------------------------------
 
-local DataSetSamplingPascal = torch.class('DataSetSamplingPascal')
+local DataSetSamplingPascal = torch.class('nn.DataSetSamplingPascal')
 
 local path_images = 'Images'
 local path_annotations = 'Annotations'

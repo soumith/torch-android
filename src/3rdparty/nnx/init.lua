@@ -61,6 +61,11 @@ torch.include('nnx', 'SpatialColorTransform.lua')
 -- other modules
 torch.include('nnx', 'FunctionWrapper.lua')
 
+-- misc
+torch.include('nnx', 'Dropout.lua')
+torch.include('nnx', 'ReLU.lua')
+torch.include('nnx', 'Minus.lua')
+
 -- criterions:
 torch.include('nnx', 'SuperCriterion.lua')
 torch.include('nnx', 'DistNLLCriterion.lua')

@@ -1,4 +1,5 @@
 #!/bin/bash
+# have ndk-build in your $PATH and the script figures out where your ANDROID_NDK is at
 ####################################################
 # You do not need to modify anything below this line
 ####################################################
@@ -13,36 +14,41 @@ fi
 unamestr=`uname`
 ndkbuildloc=`which ndk-build`
 if [[ "$unamestr" == 'Linux' ]]; then
-    export ANDROID_NDK=`readlink -f $ndkbuildloc|sed 's/ndk-exec.sh//'`
+    export ANDROID_NDK=`readlink -f $ndkbuildloc|sed 's/ndk-exec.sh//'|sed 's/ndk-build//'`
 elif [[ "$unamestr" == 'Darwin' ]]; then
     brew install coreutils
-    export ANDROID_NDK=`greadlink -f $ndkbuildloc|sed 's/ndk-exec.sh//'`
+    export ANDROID_NDK=`greadlink -f $ndkbuildloc|sed 's/ndk-exec.sh//'|sed 's/ndk-build//'`
 fi
 echo "Android NDK found at: $ANDROID_NDK"
 cd "$(dirname "$0")" # switch to script directory
 INSTALL_DIR=`pwd`
 cd src
-rm -f build/CMakeCache.txt
+rm -rf build
 mkdir -p build
 cd build
 cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/android.toolchain.cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DANDROID_STL=none
 CMAKERET=$?
 if [ $CMAKERET -ne 0 ]; then
+ echo "CMake error. Exiting."
  exit $CMAKERET
 fi
 make install
 MAKERET=$?
 if [ $MAKERET -ne 0 ]; then
+ echo "make error. Exiting."
  exit $MAKERET
 fi
 cd ../../
 
 # copy libs
+echo "Copying libraries"
 rm -rf lib
 mkdir -p lib
 cp src/libs/armeabi-v7a/*.a lib/
+echo "done"
 
 # export lua sources
+echo "exporting lua sources"
 rm -rf share
 mkdir -p share/lua/5.1/torch
 cp -r src/pkg/torch/*.lua share/lua/5.1/torch/
@@ -61,6 +67,9 @@ cp -r src/3rdparty/nnx/*.lua share/lua/5.1/nnx/
 
 mkdir -p share/lua/5.1/imgraph
 cp -r src/3rdparty/imgraph/*.lua share/lua/5.1/imgraph/
+echo "done"
 
 #remove cmake files in framework
+echo "removing cmake files in framework"
 rm -rf share/cmake
+echo "done"

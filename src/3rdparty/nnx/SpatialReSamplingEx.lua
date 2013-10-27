@@ -38,9 +38,9 @@ function SpatialReSamplingEx:updateOutput(input)
    -- compute iheight, iwidth, oheight and owidth
    self.iheight = input:size(self.yDim)
    self.iwidth = input:size(self.xDim)
-   self.oheight = self.oheight or round(self.rheight*self.iheight)
-   self.owidth = self.owidth or round(self.rwidth*self.iwidth)
-   if not ((self.oheight>=self.iheight) == (self.owidth>=self.iwidth)) then
+   self.oheightCurrent = self.oheight or round(self.rheight*self.iheight)
+   self.owidthCurrent = self.owidth or round(self.rwidth*self.iwidth)
+   if not ((self.oheightCurrent>=self.iheight) == (self.owidthCurrent>=self.iwidth)) then
       error('SpatialReSamplingEx: Cannot upsample one dimension while downsampling the other')
    end
    
@@ -58,8 +58,8 @@ function SpatialReSamplingEx:updateOutput(input)
    
    -- prepare output of size K1 x oheight x owidth x K2
    self.outputSize[1] = self.inputSize[1]
-   self.outputSize[2] = self.oheight
-   self.outputSize[3] = self.owidth
+   self.outputSize[2] = self.oheightCurrent
+   self.outputSize[3] = self.owidthCurrent
    self.outputSize[4] = self.inputSize[4]
    self.output:resize(self.outputSize)
    
@@ -68,8 +68,8 @@ function SpatialReSamplingEx:updateOutput(input)
    
    --resize output into the same shape as input
    local outputSize2 = input:size()
-   outputSize2[self.yDim] = self.oheight
-   outputSize2[self.xDim] = self.owidth
+   outputSize2[self.yDim] = self.oheightCurrent
+   outputSize2[self.xDim] = self.owidthCurrent
    self.output = self.output:reshape(outputSize2)
    return self.output
 end

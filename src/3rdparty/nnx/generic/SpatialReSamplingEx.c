@@ -15,8 +15,8 @@ static int nn_(SpatialReSamplingEx_updateOutput)(lua_State *L)
   // get all params
   THTensor *input = luaT_checkudata(L, 2, torch_Tensor);
   THTensor *output = luaT_getfieldcheckudata(L, 1, "output", torch_Tensor);
-  int oheight = luaT_getfieldcheckint(L, 1, "oheight");
-  int owidth = luaT_getfieldcheckint(L, 1, "owidth");
+  int oheight = luaT_getfieldcheckint(L, 1, "oheightCurrent");
+  int owidth = luaT_getfieldcheckint(L, 1, "owidthCurrent");
   int mode = luaT_getfieldcheckint(L, 1, "mode_c");
 
   // dims

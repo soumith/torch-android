@@ -7,6 +7,7 @@ IF(LUAROCKS_PREFIX)
     MESSAGE(STATUS "Prefix inferred from Luarocks: ${CMAKE_INSTALL_PREFIX}")
 ENDIF()
 FIND_PACKAGE(Torch REQUIRED)
+FIND_PACKAGE(OpenMP)
 
 IF (OPENMP_FOUND)
   MESSAGE (STATUS "OpenMP Found with compiler flag : ${OpenMP_C_FLAGS}")

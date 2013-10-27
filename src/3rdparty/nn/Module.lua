@@ -25,9 +25,10 @@ function Module:forward(input)
    return self:updateOutput(input)
 end
 
-function Module:backward(input, gradOutput)
+function Module:backward(input, gradOutput, scale)
+   scale = scale or 1
    self:updateGradInput(input, gradOutput)
-   self:accGradParameters(input, gradOutput)
+   self:accGradParameters(input, gradOutput, scale)
    return self.gradInput
 end
 
@@ -192,8 +193,12 @@ function Module:getParameters()
          local k, v = unpack(storageAndOffset)
          flatParameters[{{v+1,v+k:size()}}]:copy(Tensor():set(k))
       end
-      for k = 1,flatUsedParameters:nElement() do
-         flatUsedParameters[k] = flatParameters[k+cumSumOfHoles[k] ]
+      if cumSumOfHoles:sum() == 0 then
+         flatUsedParameters:copy(flatParameters)
+      else
+         for k = 1,flatUsedParameters:nElement() do
+            flatUsedParameters[k] = flatParameters[k+cumSumOfHoles[k]]
+         end
       end
       return flatUsedParameters
    end

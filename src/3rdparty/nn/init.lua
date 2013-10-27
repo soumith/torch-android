@@ -11,6 +11,7 @@ torch.include('nn','Reshape.lua')
 torch.include('nn','Select.lua')
 torch.include('nn','Narrow.lua')
 torch.include('nn','Replicate.lua')
+torch.include('nn','Transpose.lua')
 
 torch.include('nn','Copy.lua')
 torch.include('nn','Min.lua')
@@ -70,6 +71,7 @@ torch.include('nn','SpatialContrastiveNormalization.lua')
 torch.include('nn','SpatialZeroPadding.lua')
 
 torch.include('nn','VolumetricConvolution.lua')
+torch.include('nn','VolumetricMaxPooling.lua')
 
 torch.include('nn','ParallelTable.lua')
 torch.include('nn','ConcatTable.lua')
