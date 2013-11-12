@@ -23,9 +23,12 @@ Requirements
 ------------
 Android NDK and Android SDK
 
-A sample project has been provided in android-demo
-android-demo/jni/torchdemo.cpp is a simple use-case
-android-demo/assets/main.lua is the file that is run
+Samples
+--------
+* A sample project has been provided in android-demo
+* android-demo/jni/torchdemo.cpp is a simple use-case
+* android-demo/assets/main.lua is the file that is run
+* @e-lab has contributed a face detector demo, which showcases a fuller use-case.
 
 Building Torch
 --------------
