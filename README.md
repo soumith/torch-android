@@ -29,6 +29,7 @@ Samples
 * android-demo/jni/torchdemo.cpp is a simple use-case
 * android-demo/assets/main.lua is the file that is run
 * Vinayak Ghokale from e-lab Purdue (https://github.com/e-lab) contributed a face detector demo, which showcases a fuller use-case.
+* That's in the facedetector_e-lab folder. I made some changes to it to load assets etc. from apk as opposed to the sdcard, but it remains untouched otherwise.
 
 Building Torch
 --------------
