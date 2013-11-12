@@ -1,0 +1,42 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:id="@+id/RelativeLayout01"
+	android:orientation="horizontal" 
+ 	android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    
+     <Button
+        android:id="@+id/button480"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/Cam480p" />
+          
+     <Button
+        android:id="@+id/button768"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/button480"
+        android:text="@string/Cam768p" />
+     
+    <Button
+        android:id="@+id/button240"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/button480"
+        android:text="@string/Cam240p" />
+          
+   	<TextView
+            android:id="@+id/info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentLeft="true"
+            android:textStyle="bold"
+            android:textSize="20sp">
+     </TextView>
+    
+</RelativeLayout>
+    

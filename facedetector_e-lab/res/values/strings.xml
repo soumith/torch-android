@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">e-Lab Face Detector</string>
+    <string name="Cam768p">Start 768p</string>
+    <string name="Cam480p">Start 480p</string>
+    <string name="Cam240p">Start 240p</string>
+        <string name="Back">Back</string>
+    
+</resources>
+
