@@ -8,6 +8,7 @@
 
 #define DEBUG 1
 
+#include <cstdio> // for size_t which is needed b asset_manager.h (wtf android)
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
 #include "android_fopen.h"

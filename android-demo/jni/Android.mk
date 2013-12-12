@@ -10,4 +10,6 @@ LOCAL_SRC_FILES := torchandroid.cpp torchdemo.cpp android_fopen.c
 
 LOCAL_LDLIBS := -llog -landroid -L../lib/ -lluaT -ltorch-lua-static -lTH  -lnn  -ltorch -lnnx -limage -limgraph -lluaT -ltorch-lua-static -lTH -lnn  -ltorch -lnnx -limage -limgraph
 
+
+
 include $(BUILD_SHARED_LIBRARY)
