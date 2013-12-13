@@ -16,7 +16,7 @@ extern "C" {
 
 #if DEBUG
 #include <android/log.h>
-#  define  D(x...)  __android_log_print(ANDROID_LOG_INFO,"facedetector",x)
+#  define  D(x...)  __android_log_print(ANDROID_LOG_INFO,"facedetector","%s", x)
 #else
 #  define  D(...)  do {} while (0)
 #endif
