@@ -17,8 +17,8 @@ print("Hello from Lua")
 
 torch.setdefaulttensortype('torch.FloatTensor')
 -- Doing a small benchmark of the convolution module
-in_planes = 1
-out_planes = 1
+in_planes = 3
+out_planes = 16
 imsz_x = 640
 imsz_y = 480
 num_ops = 2 -- 2 ops, i.e one for multiply and one for accumulate
@@ -26,7 +26,7 @@ num_ops = 2 -- 2 ops, i.e one for multiply and one for accumulate
 test_tensor = torch.rand(in_planes,imsz_x,imsz_y)
 
 for kernel_sz=1,16 do
-   local model = nn.SpatialConvolution(out_planes,in_planes,kernel_sz,kernel_sz)
+   local model = nn.SpatialConvolution(in_planes,out_planes,kernel_sz,kernel_sz)
    tstart = os.clock()
    output1 = model:forward(test_tensor)
    tend = os.clock()
