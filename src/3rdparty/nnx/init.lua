@@ -64,6 +64,7 @@ torch.include('nnx', 'FunctionWrapper.lua')
 -- misc
 torch.include('nnx', 'Dropout.lua')
 torch.include('nnx', 'ReLU.lua')
+torch.include('nnx', 'SaturatedLU.lua')
 torch.include('nnx', 'Minus.lua')
 
 -- criterions:
