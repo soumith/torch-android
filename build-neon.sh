@@ -4,7 +4,7 @@
 # You do not need to modify anything below this line
 ####################################################
 # find system torch, if not found, install it
-command -v torch-lua >/dev/null 2>&1
+command -v luajit -ltorch >/dev/null 2>&1
 TORCHINSTALLCHECK=$?
 if [ $TORCHINSTALLCHECK -ne 0 ]; then
     echo "Torch-7 not found on system. Installing."
