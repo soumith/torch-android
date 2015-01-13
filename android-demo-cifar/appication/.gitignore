@@ -1,0 +1,7 @@
+#ignore android project generating file
+bin/
+gen/
+obj/
+libs/
+.classpath
+

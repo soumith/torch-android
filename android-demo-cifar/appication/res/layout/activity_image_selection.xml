@@ -1,0 +1,45 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/select_image_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/select_image" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/selected_image" />
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="320dp"
+            android:layout_height="320dp"
+            android:background="@android:color/background_light"
+            android:padding="3dp" />
+
+        <ImageView
+            android:id="@+id/image_small"
+            android:layout_width="64px"
+            android:layout_height="64px"
+            android:background="@android:color/background_light"
+            android:padding="3dp" />
+
+        <Button
+            android:id="@+id/start_recog_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/start_recog" />
+    </LinearLayout>
+
+</LinearLayout>
