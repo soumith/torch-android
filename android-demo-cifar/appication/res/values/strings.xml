@@ -15,5 +15,8 @@
     <string name="select_image">Select Image</string>
     <string name="start_recog">Start recognition</string>
     <string name="start_resize_and_recog">Start recognition after resize</string>
+    <string name="statement">Dataset and images used in this demo refer below website and article</string>
+    <string name="cifar10_web">http://www.cs.toronto.edu/~kriz/cifar.html</string>
+    <string name="cifar10_cite">Learning Multiple Layers of Features from Tiny Images, Alex Krizhevsky, 2009.</string>
 
 </resources>
