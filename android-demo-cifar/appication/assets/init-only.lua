@@ -38,6 +38,7 @@ require 'image'
 torch.manualSeed(1)
 -- set number of threads
 torch.setnumthreads(2)
+torch.setdefaulttensortype('torch.DoubleTensor')
 
 -- classname for cifar 10
 classes = {'airplane', 'automobile', 'bird', 'cat',
