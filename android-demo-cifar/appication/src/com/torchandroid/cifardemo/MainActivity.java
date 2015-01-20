@@ -8,9 +8,9 @@ import android.widget.Button;
 
 public class MainActivity extends Activity {
 
-	Button mButtonFace;
-	Button mButtonCifar;
-	Button mButtonImageCifar;
+	private Button mButtonCifar;
+	private Button mButtonImageCifar;
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

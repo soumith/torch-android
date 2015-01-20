@@ -16,6 +16,12 @@
             android:layout_height="wrap_content"
             android:text="@string/select_image" />
 
+        <Button
+            android:id="@+id/button_camera_cifar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_camera_cifar" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

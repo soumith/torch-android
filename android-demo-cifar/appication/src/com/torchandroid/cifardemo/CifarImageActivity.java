@@ -11,14 +11,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.torchandroid.cifardemo.lua.LuaManager;
 import com.torchandroid.cifardemo.util.Util;
@@ -26,12 +24,15 @@ import com.torchandroid.cifardemo.util.Util;
 public class CifarImageActivity extends Activity {
 
 	final private String TAG = "CifarImageActivity";
+
 	private LuaManager mLuaManager;
 	private Button mSelectImageButton;
 	private Button mStartRecogButton;
+	private Button mButtonCamera;
 	private ImageView mImageView;
 	private ImageView mSmallImageView;
 	private final int REQUEST_CODE_IMAGE = 100;
+	private final int REQUEST_CODE_CAMERA = 200;
 	private Uri mImageUri;
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -43,16 +44,20 @@ public class CifarImageActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		setContentView(R.layout.activity_image_selection);
+
 		mSelectImageButton = (Button) findViewById(R.id.select_image_button);
+		mSelectImageButton.setOnClickListener(mSelectImageButtonClickListener);
+
 		mStartRecogButton = (Button) findViewById(R.id.start_recog_button);
-		// mStartResizeAndRecogButton = (Button)
-		// findViewById(R.id.start_resize_and_recog_button);
+		mStartRecogButton.setOnClickListener(mStartRecogButtonClickListener);
+
+		mButtonCamera = (Button) findViewById(R.id.button_camera_cifar);
+		mButtonCamera.setOnClickListener(mCamerabuttonClickListener);
+
 		mLuaManager = LuaManager.getLuaManager(this);
 		mImageView = (ImageView) findViewById(R.id.image);
 		mSmallImageView = (ImageView) findViewById(R.id.image_small);
 
-		mSelectImageButton.setOnClickListener(mSelectImageButtonClickListener);
-		mStartRecogButton.setOnClickListener(mStartRecogButtonClickListener);
 	}
 
 	/**
@@ -72,13 +77,39 @@ public class CifarImageActivity extends Activity {
 	 * get selected image uri
 	 */
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == REQUEST_CODE_IMAGE && resultCode == RESULT_OK) {
-			mImageUri = data.getData();
-			mImageView.setImageURI(mImageUri);
-			mStartRecogButton.setText(R.string.start_recog);
+
+		if (resultCode == RESULT_OK) {
+			if (requestCode == REQUEST_CODE_IMAGE) {
+				mImageUri = data.getData();
+				mImageView.setImageURI(mImageUri);
+				mStartRecogButton.setText(R.string.start_recog);
+			} else if (requestCode == REQUEST_CODE_CAMERA) {
+				
+				Bundle extras = data.getExtras();
+				//get bitmap from returned intent
+				Bitmap imageBitmap = (Bitmap) extras.get("data"); 
+				mImageView.setImageBitmap(imageBitmap);
+
+				Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, 32,
+						32, false);
+				//start recognition directly with 32x32 resized image
+				int result = mLuaManager.getTopRecognitionResult(32, 32,
+						Util.getImageRGBA(resizedBitmap));
+				if (result != -1)
+					mStartRecogButton.setText("Result : "
+							+ Util.classes[result - 1]);
+				else
+					mStartRecogButton.setText("recognition failed");
+				mSmallImageView.setImageBitmap(resizedBitmap);
+			}
 		}
 	};
 
+	/**
+	 * get file path from content Uri
+	 * @param contentUri
+	 * @return file path by string
+	 */
 	private String getRealPathFromURI(Uri contentUri) {
 
 		String filePath;
@@ -149,4 +180,14 @@ public class CifarImageActivity extends Activity {
 
 		}
 	};
+
+	View.OnClickListener mCamerabuttonClickListener = new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			Intent intent = new Intent();
+			intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+			startActivityForResult(intent, REQUEST_CODE_CAMERA);
+		}
+	};
+
 }

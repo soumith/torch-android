@@ -1,9 +1,4 @@
-if [ $*=="clean" ]; then
-	ndk-build clean
-	rm -rf assets/lua
-	exit
-fi
-
+#!/bin/sh
 ndk-build
 rm -rf assets/lua
 mkdir -p assets/lua/share
