@@ -8,7 +8,10 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -25,14 +28,17 @@ public class CifarImageActivity extends Activity {
 
 	final private String TAG = "CifarImageActivity";
 
+	private final int REQUEST_CODE_IMAGE = 100;
+	private final int REQUEST_CODE_CAMERA = 200;
+	private final int MSG_START_IMAGE_RECOGNITION = 0;
+	private final int MSG_START_CAMERA_RECOGNITION = 1;
+
 	private LuaManager mLuaManager;
 	private Button mSelectImageButton;
 	private Button mStartRecogButton;
 	private Button mButtonCamera;
 	private ImageView mImageView;
 	private ImageView mSmallImageView;
-	private final int REQUEST_CODE_IMAGE = 100;
-	private final int REQUEST_CODE_CAMERA = 200;
 	private Uri mImageUri;
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -84,29 +90,21 @@ public class CifarImageActivity extends Activity {
 				mImageView.setImageURI(mImageUri);
 				mStartRecogButton.setText(R.string.start_recog);
 			} else if (requestCode == REQUEST_CODE_CAMERA) {
-				
 				Bundle extras = data.getExtras();
-				//get bitmap from returned intent
-				Bitmap imageBitmap = (Bitmap) extras.get("data"); 
+				// get bitmap from returned intent
+				Message imageMessage = new Message();
+				imageMessage.what = MSG_START_CAMERA_RECOGNITION;
+				Bitmap imageBitmap = (Bitmap) extras.get("data");
+				imageMessage.obj = imageBitmap;
 				mImageView.setImageBitmap(imageBitmap);
-
-				Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, 32,
-						32, false);
-				//start recognition directly with 32x32 resized image
-				int result = mLuaManager.getTopRecognitionResult(32, 32,
-						Util.getImageRGBA(resizedBitmap));
-				if (result != -1)
-					mStartRecogButton.setText("Result : "
-							+ Util.classes[result - 1]);
-				else
-					mStartRecogButton.setText("recognition failed");
-				mSmallImageView.setImageBitmap(resizedBitmap);
+				mHandler.sendMessage(imageMessage);
 			}
 		}
 	};
 
 	/**
 	 * get file path from content Uri
+	 * 
 	 * @param contentUri
 	 * @return file path by string
 	 */
@@ -134,10 +132,48 @@ public class CifarImageActivity extends Activity {
 		return contentUri.getPath();
 	}
 
+	Handler mHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case MSG_START_CAMERA_RECOGNITION:
+			case MSG_START_IMAGE_RECOGNITION:
+				Bitmap imageBitmap = (Bitmap) msg.obj;
+				final Bitmap resizedBitmap;
+				if (imageBitmap.getWidth() == 32
+						&& imageBitmap.getHeight() == 32) {
+					resizedBitmap = imageBitmap;
+				} else {
+					resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, 32,
+							32, false);
+				}
+				// start recognition with 32x32 resized image
+				final int result = mLuaManager.getTopRecognitionResult(32, 32,
+						Util.getImageRGBA(resizedBitmap));
+				runOnUiThread(new Runnable() {
+
+					@Override
+					public void run() {
+						if (result != -1)
+							mStartRecogButton.setText("Result : "
+									+ Util.classes[result - 1]);
+						else
+							mStartRecogButton.setText("recognition failed");
+						mSmallImageView.setImageBitmap(resizedBitmap);
+					}
+				});
+				break;
+			default:
+				break;
+			}
+		}
+	};
+
 	OnClickListener mStartRecogButtonClickListener = new OnClickListener() {
 
 		@Override
 		public void onClick(View v) {
+
 			if (mImageUri != null && mImageUri.getPath() != null) {
 				File selectedImgFile = new File(getRealPathFromURI(mImageUri));
 				Log.e(TAG, "Image path : " + mImageUri.getPath());
@@ -155,28 +191,15 @@ public class CifarImageActivity extends Activity {
 					} else {
 						resizedBitmap = bitmap;
 					}
-
-					int result = mLuaManager.getTopRecognitionResult(32, 32,
-							Util.getImageRGBA(resizedBitmap));
-					if (result != -1)
-						mStartRecogButton.setText("Result : "
-								+ Util.classes[result - 1]);
-					else
-						mStartRecogButton.setText("recognition failed");
-					mSmallImageView.setImageBitmap(resizedBitmap);
+					Message imageMessage = new Message();
+					imageMessage.what = MSG_START_IMAGE_RECOGNITION;
+					imageMessage.obj = resizedBitmap;
+					mHandler.sendMessage(imageMessage);
 				} else {
 					Log.e(TAG, "bitmap null");
 				}
 
 			}
-
-		}
-	};
-
-	OnClickListener mStartResizeAndRecogButtonClickListener = new OnClickListener() {
-
-		@Override
-		public void onClick(View v) {
 
 		}
 	};
