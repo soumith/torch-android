@@ -33,7 +33,7 @@ Samples
 
 Building Torch
 --------------
-1. open build.sh and modify ANDROID_NDK_TOOLCHAIN_ROOT to your android ndk path.
+1. open build.sh and modify ANDROID_NDK to your android ndk path.
 2. run build script
 $ sh build.sh
 
