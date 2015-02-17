@@ -4,11 +4,11 @@
 # You do not need to modify anything below this line
 ####################################################
 # find system torch, if not found, install it
-command -v torch-lua >/dev/null 2>&1
+command -v luajit -ltorch >/dev/null 2>&1
 TORCHINSTALLCHECK=$?
 if [ $TORCHINSTALLCHECK -ne 0 ]; then
-    echo "Torch-7 not found on system. Installing."
-    curl -s https://raw.github.com/torch/ezinstall/master/install-all | bash
+    echo "Torch-7 not found on system. Please install it using instructions from http://torch.ch"
+    exit -1
 fi
 # have ndk-build in your PATH and the script figures out where your ANDROID_NDK is at
 unamestr=`uname`
