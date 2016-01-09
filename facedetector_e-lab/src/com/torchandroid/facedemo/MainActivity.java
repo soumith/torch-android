@@ -21,7 +21,7 @@ public class MainActivity extends Activity {
 	public static int width, height;
 	static TextView infoText;
 
-	Button button768, button480, button1080;
+	Button button768, button480, button1080, button240;
 	   
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
@@ -30,9 +30,10 @@ public class MainActivity extends Activity {
 	    
 	    setContentView(R.layout.activity_main);	   
 
+	    button1080 = (Button) findViewById(R.id.button1080);
 	    button768 = (Button) findViewById(R.id.button768);
 	    button480 = (Button) findViewById(R.id.button480);
-	    button1080 = (Button) findViewById(R.id.button240);
+	    button240 = (Button) findViewById(R.id.button240);
 	    infoText = (TextView) this.findViewById(R.id.info);
 	    
 	    infoText.setText("This network requires 183.4 MOPs.\nIt has 3 layers like so -\n\nSpatial " +
@@ -40,6 +41,7 @@ public class MainActivity extends Activity {
 	    
 	    button768.setOnClickListener(buttonHandler);
 	    button480.setOnClickListener(buttonHandler);
+	    button240.setOnClickListener(buttonHandler);
 	    button1080.setOnClickListener(buttonHandler);
 	}
 	
@@ -50,6 +52,10 @@ public class MainActivity extends Activity {
 		{
 			switch(v.getId())
 			{
+			case R.id.button1080:
+				width = 1920;
+				height = 1080;
+				break;
 			case R.id.button768:
 				width = 1280;
 				height = 768;

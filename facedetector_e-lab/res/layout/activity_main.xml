@@ -20,6 +20,14 @@
         android:layout_below="@id/button480"
         android:text="@string/Cam768p" />
      
+     <Button
+        android:id="@+id/button1080"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/button768"
+        android:text="@string/Cam1080p" />
+
     <Button
         android:id="@+id/button240"
         android:layout_width="wrap_content"
