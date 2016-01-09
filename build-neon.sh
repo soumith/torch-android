@@ -26,7 +26,7 @@ cd src
 rm -rf build
 mkdir -p build
 cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/android.toolchain.cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DANDROID_STL=none -DARM_TARGETS="armeabi-v7a with NEON" -DNEON_FOUND=true 
+cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/android.toolchain.cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DANDROID_STL=none -DARM_TARGETS="armeabi-v7a with NEON" -DNEON_FOUND=true -DLIBRARY_OUTPUT_PATH_ROOT=..
 CMAKERET=$?
 if [ $CMAKERET -ne 0 ]; then
  echo "CMake error. Exiting."
