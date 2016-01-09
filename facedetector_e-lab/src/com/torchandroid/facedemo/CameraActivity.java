@@ -59,8 +59,8 @@ public class CameraActivity extends Activity
 	    camHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 	         
 	    mainLayout = (FrameLayout) findViewById(R.id.frameLayout);
-	    mainLayout.addView(camView, new LayoutParams(1280, 768));
-	    mainLayout.addView(MyCameraClass, new LayoutParams(1280, 768));
+	    mainLayout.addView(camView, new LayoutParams(1920, 1080));
+	    mainLayout.addView(MyCameraClass, new LayoutParams(1920, 1080));
 	    
 	}
 	

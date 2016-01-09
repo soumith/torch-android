@@ -1,6 +1,7 @@
 package com.torchandroid.facedemo;
 
 import java.io.IOException;
+import java.util.List;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
@@ -35,8 +36,8 @@ public class CameraClass implements SurfaceHolder.Callback, Camera.PreviewCallba
 	PreviewSizeWidth = PreviewlayoutWidth;
 	PreviewSizeHeight = PreviewlayoutHeight;
 	MycameraClass = cameraClass;
-	bitmap = Bitmap.createBitmap(1280, 768, Bitmap.Config.ARGB_8888);
-	pixels = new int[1280*768];
+	bitmap = Bitmap.createBitmap(1920, 1080, Bitmap.Config.ARGB_8888);
+	pixels = new int[1920*1080];
     }
 	  
     public void onPreviewFrame(byte[] arg0, Camera arg1) 
@@ -60,9 +61,10 @@ public class CameraClass implements SurfaceHolder.Callback, Camera.PreviewCallba
 	Parameters parameters;
 	   
 	parameters = mCamera.getParameters();
+    List<Camera.Size> sizes = parameters.getSupportedPreviewSizes();
 	// Set the camera preview size
 	parameters.setPreviewFormat(ImageFormat.YV12);
-	parameters.setPreviewSize(1280, 768);
+	parameters.setPreviewSize(sizes.get(0).width, sizes.get(0).height);
 	   
 	imageFormat = parameters.getPreviewFormat();
 	   
@@ -130,7 +132,7 @@ public class CameraClass implements SurfaceHolder.Callback, Camera.PreviewCallba
 			wholeLoop = (float) ((stop-start)/1000);
 			fps = 1/wholeLoop;
 				
-			bitmap.setPixels(pixels, 0, 1280, 0, 0, 1280, 768);
+			bitmap.setPixels(pixels, 0, 1920, 0, 0, 1920, 1080);
 			MycameraClass.setImageBitmap(bitmap);
 	
 			networkPercentage = (networkLoop/wholeLoop)*100;
