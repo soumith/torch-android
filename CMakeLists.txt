@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 2.8)
+SET(HAS_GCC_ATOMICS_EXITCODE TRUE)
+SET(C_HAS_inline_EXITCODE 0)
+SET(C_HAS___inline___EXITCODE 0)
+set( C_HAS___inline_EXITCODE 0)
+ADD_SUBDIRECTORY(src)
