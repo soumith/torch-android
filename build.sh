@@ -30,17 +30,24 @@ echo "Android NDK found at: $ANDROID_NDK"
 cd "$(dirname "$0")" # switch to script directory
 SCRIPT_ROOT_DIR=`pwd`
 INSTALL_DIR=$SCRIPT_ROOT_DIR/install
+NVCC=`which nvcc`
 
 set +e # hard errors
 
 # Build Lua
-mkdir -p build
+# -DANDROID_TOOLCHAIN_NAME=aarch64-linux-android-4.9
+rm -fr build install
+mkdir -p build install
 cd build
-cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/android.toolchain.cmake -DWITH_LUA52=ON -DWITH_LUAROCKS=OFF \
-    -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DANDROID_STL=none -DLIBRARY_OUTPUT_PATH_ROOT=$INSTALL_DIR  -DCWRAP_CUSTOM_LUA=th \
-    -DCMAKE_C_FLAGS="-DDISABLE_POSIX_MEMALIGN"
+
+cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/android.toolchain.cmake \
+    -DANDROID_ABI=arm64-v8a -DCUDA_ARCH_NAME=Maxwell\
+    -DWITH_LUA52=ON -DWITH_LUAROCKS=OFF \
+    -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DLIBRARY_OUTPUT_PATH_ROOT=$INSTALL_DIR  -DCWRAP_CUSTOM_LUA=th \
+    -DCMAKE_C_FLAGS="-DDISABLE_POSIX_MEMALIGN" -DCUDA_TOOLKIT_ROOT_DIR="${CUDA_ANDROID_HOME}/aarch64-linux-androideabi"
 
 make install
+
 
 cd ..
 
