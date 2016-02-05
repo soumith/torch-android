@@ -40,13 +40,15 @@ rm -fr build install
 mkdir -p build install
 cd build
 
+export VE="VERBOSE=1"
+
 cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/android.toolchain.cmake \
     -DANDROID_ABI=arm64-v8a -DCUDA_ARCH_NAME=Maxwell\
     -DWITH_LUA52=ON -DWITH_LUAROCKS=OFF \
     -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DLIBRARY_OUTPUT_PATH_ROOT=$INSTALL_DIR  -DCWRAP_CUSTOM_LUA=th \
     -DCMAKE_C_FLAGS="-DDISABLE_POSIX_MEMALIGN" -DCUDA_TOOLKIT_ROOT_DIR="${CUDA_ANDROID_HOME}/aarch64-linux-androideabi"
 
-make install
+make $VE install
 
 
 cd ..
