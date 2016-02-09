@@ -87,7 +87,7 @@ extern int loader_android (lua_State *L) {
   char *filebytes;
   long size;
   // try lua/share/lua/5.1/torch.lua
-  strlcpy(pname, "lua/share/lua/5.1/", sizeof(pname));
+  strlcpy(pname, "lua/share/lua/5.2/", sizeof(pname));
   strlcat(pname, name, sizeof(pname));
   strlcat(pname, ".lua", sizeof(pname));
   size = android_asset_get_size(pname);
@@ -98,7 +98,7 @@ extern int loader_android (lua_State *L) {
   }
   // try lua/share/lua/5.1/torch/init.lua
   pname[0] = '\0';
-  strlcpy(pname, "lua/share/lua/5.1/", sizeof(pname));
+  strlcpy(pname, "lua/share/lua/5.2/", sizeof(pname));
   strlcat(pname, name, sizeof(pname));
   strlcat(pname, "/init.lua", sizeof(pname));
   size = android_asset_get_size(pname);
@@ -120,7 +120,7 @@ lua_State* inittorch(AAssetManager* manager) {
   luaopen_landroidprint(L);
   // add an android module loader to package.loaders
   lua_getglobal(L, "package");        
-  lua_getfield(L, -1, "loaders");
+  lua_getfield(L, -1, "searchers");
   int numloaders = lua_objlen(L, -1);
   lua_pushcfunction(L, loader_android);
   lua_rawseti(L, -2, numloaders+1);
