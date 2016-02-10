@@ -1,3 +1,4 @@
 [submodule "src"]
 	path = src
-	url = https://github.com/torch/distro
+	url = https://github.com/borisfom/distro
+        branch = android

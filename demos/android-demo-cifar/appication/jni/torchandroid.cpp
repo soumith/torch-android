@@ -5,7 +5,7 @@
 void android_fopen_set_asset_manager(AAssetManager* manager);
 FILE* android_fopen(const char* fname, const char* mode);
 
-static const luaL_reg lualibs[] =
+static const luaL_Reg lualibs[] =
   {
     { "base",       luaopen_base },
     { "libtorch",   luaopen_libtorch },
@@ -19,7 +19,7 @@ static const luaL_reg lualibs[] =
 lua_State* openlualibs(lua_State *l)
 {
   luaL_openlibs(l);
-  const luaL_reg *lib;
+  const luaL_Reg *lib;
   int ret;
   for (lib = lualibs; lib->func != NULL; lib++)
     {
@@ -40,7 +40,7 @@ static int landroid_print(lua_State* L) {
   return 0;
 }
 
-static const struct luaL_reg androidprint [] = {
+static const struct luaL_Reg androidprint [] = {
   {"print", landroid_print},
   {NULL, NULL} /* end of array */
 };

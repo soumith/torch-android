@@ -30,17 +30,33 @@ echo "Android NDK found at: $ANDROID_NDK"
 cd "$(dirname "$0")" # switch to script directory
 SCRIPT_ROOT_DIR=`pwd`
 INSTALL_DIR=$SCRIPT_ROOT_DIR/install
+NVCC=`which nvcc`
+
+APP_ABI=armeabi-v7a
+ABI_NAME=armv7-linux-androideabi
+
+
+# Uncomment for ARM64
+# APP_ABI=arm64-v8a
+# ABI_NAME=aarch64-linux-androideabi"
 
 set +e # hard errors
 
 # Build Lua
-mkdir -p build
+mkdir -p build install
 cd build
-cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/android.toolchain.cmake -DWITH_LUA52=ON -DWITH_LUAROCKS=OFF \
-    -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DANDROID_STL=none -DLIBRARY_OUTPUT_PATH_ROOT=$INSTALL_DIR  -DCWRAP_CUSTOM_LUA=th \
-    -DCMAKE_C_FLAGS="-DDISABLE_POSIX_MEMALIGN"
 
-make install
+export VE="VERBOSE=1"
+
+cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/android.toolchain.cmake \
+    -DANDROID_ABI=${APP_ABI}  -DCUDA_ARCH_NAME=Maxwell -DCUDA_TOOLKIT_ROOT_DIR="${CUDA_ANDROID_HOME}/${ABI_NAME}"\
+    -DWITH_LUA52=ON -DWITH_LUAROCKS=OFF \
+    -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DLIBRARY_OUTPUT_PATH_ROOT=$INSTALL_DIR -DCWRAP_CUSTOM_LUA=th \
+    -DCMAKE_C_FLAGS="-DDISABLE_POSIX_MEMALIGN"
+echo " ------ CMAKE DONE ------- "
+
+make $VE install
+
 
 cd ..
 

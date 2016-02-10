@@ -7,13 +7,9 @@ FILE* android_fopen(const char* fname, const char* mode);
 
 
 
-static const luaL_reg lualibs[] =
+static const luaL_Reg lualibs[] =
   {
     { "base",       luaopen_base },
-    { "libtorch",   luaopen_libtorch },
-    { "nn",         luaopen_libnn },
-    { "nnx",        luaopen_libnnx },
-    { "image",      luaopen_libimage },
     { NULL,         NULL }
   };
 
@@ -21,11 +17,11 @@ static const luaL_reg lualibs[] =
 lua_State* openlualibs(lua_State *l)
 {
   luaL_openlibs(l);
-  const luaL_reg *lib;
+  const luaL_Reg *lib;
   int ret;
   for (lib = lualibs; lib->func != NULL; lib++)
     {
-      lib->func(l);      
+      lib->func(l);
       lua_settop(l, 0);
     }
   return l;
@@ -42,7 +38,7 @@ static int landroid_print(lua_State* L) {
   return 0;
 }
 
-static const struct luaL_reg androidprint [] = {
+static const struct luaL_Reg androidprint [] = {
   {"print", landroid_print},
   {NULL, NULL} /* end of array */
 };
@@ -50,7 +46,7 @@ static const struct luaL_reg androidprint [] = {
 extern int luaopen_landroidprint(lua_State *L)
 {
   lua_getglobal(L, "_G");
-  luaL_register(L, NULL, androidprint);
+  luaL_setfuncs(L, androidprint, 0);
   lua_pop(L, 1);
 }
 
@@ -87,25 +83,25 @@ extern int loader_android (lua_State *L) {
   char *filebytes;
   long size;
   // try lua/share/lua/5.1/torch.lua
-  strlcpy(pname, "lua/share/lua/5.1/", sizeof(pname));
+  strlcpy(pname, "lua/share/lua/5.2/", sizeof(pname));
   strlcat(pname, name, sizeof(pname));
   strlcat(pname, ".lua", sizeof(pname));
   size = android_asset_get_size(pname);
   if (size != -1) {
     filebytes = android_asset_get_bytes(pname);
     luaL_loadbuffer(L, filebytes, size, name);
-    return 1;    
+    return 1;
   }
   // try lua/share/lua/5.1/torch/init.lua
   pname[0] = '\0';
-  strlcpy(pname, "lua/share/lua/5.1/", sizeof(pname));
+  strlcpy(pname, "lua/share/lua/5.2/", sizeof(pname));
   strlcat(pname, name, sizeof(pname));
   strlcat(pname, "/init.lua", sizeof(pname));
   size = android_asset_get_size(pname);
   if (size != -1) {
     filebytes = android_asset_get_bytes(pname);
     luaL_loadbuffer(L, filebytes, size, name);
-    return 1;    
+    return 1;
   }
   return 1;
 }
@@ -113,19 +109,17 @@ extern int loader_android (lua_State *L) {
 lua_State* inittorch(AAssetManager* manager) {
   /* Declare a Lua State, open the Lua State */
   lua_State *L;
-  L = lua_open();
+  L = luaL_newstate();
   // set the asset manager
   android_fopen_set_asset_manager(manager);
   openlualibs(L);
   luaopen_landroidprint(L);
   // add an android module loader to package.loaders
-  lua_getglobal(L, "package");        
-  lua_getfield(L, -1, "loaders");
+  lua_getglobal(L, "package");
+  lua_getfield(L, -1, "searchers");
   int numloaders = lua_objlen(L, -1);
   lua_pushcfunction(L, loader_android);
   lua_rawseti(L, -2, numloaders+1);
   lua_pop(L, 1);
   return L;
 }
-
-
