@@ -94,10 +94,14 @@ LOCAL_MODULE := torchdemo
 #CUDA_ANDROID_ARCH = $(CUDA_ANDROID_HOME)/armv7-linux-androideabi
 CUDA_ANDROID_ARCH = $(CUDA_ANDROID_HOME)/aarch64-linux-androideabi
 #LOCAL_LDFLAGS := -L../lib/ -L$(CUDA_ANDROID_ARCH)/lib -L$(CUDA_ANDROID_ARCH)/lib/stubs -DDEBUG
-LOCAL_LDFLAGS := -L../lib/ -L$(CUDA_ANDROID_ARCH)/lib64 -L$(CUDA_ANDROID_ARCH)/lib64/stubs -DDEBUG
-LOCAL_LDLIBS += -L$(NDK_ROOT)/sources/cxx-stl/gnu-libstdc++/4.9/libs/$(TARGET_ARCH_ABI) -lgnustl_static -landroid -llog
+#LOCAL_LDFLAGS := -L../lib/ -L$(CUDA_ANDROID_ARCH)/lib64 -L$(CUDA_ANDROID_ARCH)/lib64/stubs -DDEBUG
+LOCAL_LDFLAGS :=
+#LOCAL_LDLIBS += -L$(NDK_ROOT)/sources/cxx-stl/gnu-libstdc++/4.9/libs/$(TARGET_ARCH_ABI) -landroid -llog -ldl
+LOCAL_LDLIBS += -landroid -llog -ldl
+
 LOCAL_C_INCLUDES += ../../install/include
 LOCAL_SRC_FILES := torchandroid.cpp torchdemo.cpp android_fopen.c
-LOCAL_SHARED_LIBRARIES := lua torch luaT TH threads threadsmain nn nnx image THC cutorch THCUNN THNN paths ppm sys sundown
-include $(BUILD_SHARED_LIBRARY)
+# LOCAL_SHARED_LIBRARIES := lua torch luaT TH threads threadsmain nn nnx image THC cutorch THCUNN THNN paths ppm sys sundown
+LOCAL_SHARED_LIBRARIES := lua torch luaT TH
 
+include $(BUILD_SHARED_LIBRARY)

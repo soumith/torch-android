@@ -10,10 +10,6 @@ FILE* android_fopen(const char* fname, const char* mode);
 static const luaL_Reg lualibs[] =
   {
     { "base",       luaopen_base },
-    { "libtorch",   luaopen_libtorch },
-    { "nn",         luaopen_libnn },
-    { "nnx",        luaopen_libnnx },
-    { "image",      luaopen_libimage },
     { NULL,         NULL }
   };
 
@@ -25,7 +21,7 @@ lua_State* openlualibs(lua_State *l)
   int ret;
   for (lib = lualibs; lib->func != NULL; lib++)
     {
-      lib->func(l);      
+      lib->func(l);
       lua_settop(l, 0);
     }
   return l;
@@ -94,7 +90,7 @@ extern int loader_android (lua_State *L) {
   if (size != -1) {
     filebytes = android_asset_get_bytes(pname);
     luaL_loadbuffer(L, filebytes, size, name);
-    return 1;    
+    return 1;
   }
   // try lua/share/lua/5.1/torch/init.lua
   pname[0] = '\0';
@@ -105,7 +101,7 @@ extern int loader_android (lua_State *L) {
   if (size != -1) {
     filebytes = android_asset_get_bytes(pname);
     luaL_loadbuffer(L, filebytes, size, name);
-    return 1;    
+    return 1;
   }
   return 1;
 }
@@ -119,7 +115,7 @@ lua_State* inittorch(AAssetManager* manager) {
   openlualibs(L);
   luaopen_landroidprint(L);
   // add an android module loader to package.loaders
-  lua_getglobal(L, "package");        
+  lua_getglobal(L, "package");
   lua_getfield(L, -1, "searchers");
   int numloaders = lua_objlen(L, -1);
   lua_pushcfunction(L, loader_android);
@@ -127,5 +123,3 @@ lua_State* inittorch(AAssetManager* manager) {
   lua_pop(L, 1);
   return L;
 }
-
-

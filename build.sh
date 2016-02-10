@@ -36,7 +36,7 @@ set +e # hard errors
 
 # Build Lua
 # -DANDROID_TOOLCHAIN_NAME=aarch64-linux-android-4.9
-rm -fr build install
+# rm -fr build install
 mkdir -p build install
 cd build
 
