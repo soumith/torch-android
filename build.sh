@@ -32,21 +32,27 @@ SCRIPT_ROOT_DIR=`pwd`
 INSTALL_DIR=$SCRIPT_ROOT_DIR/install
 NVCC=`which nvcc`
 
+APP_ABI=armeabi-v7a
+ABI_NAME=armv7-linux-androideabi
+
+
+# Uncomment for ARM64
+# APP_ABI=arm64-v8a
+# ABI_NAME=aarch64-linux-androideabi"
+
 set +e # hard errors
 
 # Build Lua
-# -DANDROID_TOOLCHAIN_NAME=aarch64-linux-android-4.9
-# rm -fr build install
 mkdir -p build install
 cd build
 
 export VE="VERBOSE=1"
 
 cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/android.toolchain.cmake \
-    -DANDROID_ABI=arm64-v8a -DCUDA_ARCH_NAME=Maxwell\
+    -DANDROID_ABI=${APP_ABI}  -DCUDA_ARCH_NAME=Maxwell -DCUDA_TOOLKIT_ROOT_DIR="${CUDA_ANDROID_HOME}/${ABI_NAME}"\
     -DWITH_LUA52=ON -DWITH_LUAROCKS=OFF \
-    -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DLIBRARY_OUTPUT_PATH_ROOT=$INSTALL_DIR  -DCUDA_SDK_ROOT_DIR=$CUDA_TOOLKIT_ROOT -DCWRAP_CUSTOM_LUA=th \
-    -DCMAKE_C_FLAGS="-DDISABLE_POSIX_MEMALIGN" -DCUDA_TOOLKIT_ROOT_DIR="${CUDA_ANDROID_HOME}/aarch64-linux-androideabi"
+    -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DLIBRARY_OUTPUT_PATH_ROOT=$INSTALL_DIR -DCWRAP_CUSTOM_LUA=th \
+    -DCMAKE_C_FLAGS="-DDISABLE_POSIX_MEMALIGN"
 echo " ------ CMAKE DONE ------- "
 
 make $VE install
