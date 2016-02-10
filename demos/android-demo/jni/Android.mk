@@ -1,92 +1,94 @@
 LOCAL_PATH := $(call my-dir)
 
+TH_LIB_DIR=../../../install/libs/${APP_ABI}
+
 include $(CLEAR_VARS)
 LOCAL_MODULE := luaT
-LOCAL_SRC_FILES := ../../../install/libs/arm64-v8a/libluaT.so
+LOCAL_SRC_FILES := ${TH_LIB_DIR}/libluaT.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := TH
-LOCAL_SRC_FILES := ../../../install/libs/arm64-v8a/libTH.so
+LOCAL_SRC_FILES := ${TH_LIB_DIR}/libTH.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := torch
-LOCAL_SRC_FILES := ../../../install/libs/arm64-v8a/libtorch.so
+LOCAL_SRC_FILES := ${TH_LIB_DIR}/libtorch.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := lua
-LOCAL_SRC_FILES := ../../../install/libs/arm64-v8a/liblua.so
+LOCAL_SRC_FILES := ${TH_LIB_DIR}/liblua.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := threadsmain
-LOCAL_SRC_FILES := ../../../install/libs/arm64-v8a/libthreadsmain.so
+LOCAL_SRC_FILES := ${TH_LIB_DIR}/libthreadsmain.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := threads
-LOCAL_SRC_FILES := ../../../install/libs/arm64-v8a/libthreads.so
+LOCAL_SRC_FILES := ${TH_LIB_DIR}/libthreads.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := nn
-LOCAL_SRC_FILES := ../../../install/libs/arm64-v8a/libnn.so
+LOCAL_SRC_FILES := ${TH_LIB_DIR}/libnn.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := nnx
-LOCAL_SRC_FILES := ../../../install/libs/arm64-v8a/libnnx.so
+LOCAL_SRC_FILES := ${TH_LIB_DIR}/libnnx.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := image
-LOCAL_SRC_FILES := ../../../install/libs/arm64-v8a/libimage.so
+LOCAL_SRC_FILES := ${TH_LIB_DIR}/libimage.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := cutorch
-LOCAL_SRC_FILES := ../../../install/libs/arm64-v8a/libcutorch.so
+LOCAL_SRC_FILES := ${TH_LIB_DIR}/libcutorch.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := paths
-LOCAL_SRC_FILES := ../../../install/libs/arm64-v8a/libpaths.so
+LOCAL_SRC_FILES := ${TH_LIB_DIR}/libpaths.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := ppm
-LOCAL_SRC_FILES := ../../../install/libs/arm64-v8a/libppm.so
+LOCAL_SRC_FILES := ${TH_LIB_DIR}/libppm.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := sys
-LOCAL_SRC_FILES := ../../../install/libs/arm64-v8a/libsys.so
+LOCAL_SRC_FILES := ${TH_LIB_DIR}/libsys.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := sundown
-LOCAL_SRC_FILES := ../../../install/libs/arm64-v8a/libsundown.so
+LOCAL_SRC_FILES := ${TH_LIB_DIR}/libsundown.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := THC
-LOCAL_SRC_FILES := ../../../install/libs/arm64-v8a/libTHC.so
+LOCAL_SRC_FILES := ${TH_LIB_DIR}/libTHC.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := THCUNN
-LOCAL_SRC_FILES := ../../../install/libs/arm64-v8a/libTHCUNN.so
+LOCAL_SRC_FILES := ${TH_LIB_DIR}/libTHCUNN.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := THNN
-LOCAL_SRC_FILES := ../../../install/libs/arm64-v8a/libTHNN.so
+LOCAL_SRC_FILES := ${TH_LIB_DIR}/libTHNN.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
