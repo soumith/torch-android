@@ -33,11 +33,33 @@ INSTALL_DIR=$SCRIPT_ROOT_DIR/install
 
 set +e # hard errors
 
+# Build host luajit for minilua and buildvm
+cd distro/exe/luajit-rocks/luajit-2.1
+NDK=$ANDROID_NDK
+NDKABI=21
+NDKVER=$NDK/toolchains/arm-linux-androideabi-4.9
+if [[ "$unamestr" == 'Linux' ]]; then
+    export NDKP=$NDKVER/prebuilt/linux-x86/bin/arm-linux-androideabi-
+elif [[ "$unamestr" == 'Darwin' ]]; then
+    export NDKP=$NDKVER/prebuilt/darwin-x86_64/bin/arm-linux-androideabi-
+fi
+NDKF="--sysroot $NDK/platforms/android-$NDKABI/arch-arm"
+NDKARCH="-march=armv7-a -mfloat-abi=softfp -Wl,--fix-cortex-a8"
+
+# make clean
+make HOST_CC="gcc -m32" CC="gcc" HOST_SYS=$unamestr TARGET_SYS=Linux CROSS=$NDKP TARGET_FLAGS="$NDKF $NDKARCH"
+
+
+cd $SCRIPT_ROOT_DIR
+
 # Build Lua
 mkdir -p build
 cd build
-cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/android.toolchain.cmake -DWITH_LUA52=ON -DWITH_LUAROCKS=OFF \
-    -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DANDROID_STL=none -DLIBRARY_OUTPUT_PATH_ROOT=$INSTALL_DIR  -DCWRAP_CUSTOM_LUA=th \
+cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/android.toolchain.cmake -DWITH_LUAJIT21=ON -DWITH_LUAROCKS=OFF \
+    -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DANDROID_STL=none -DLIBRARY_OUTPUT_PATH_ROOT=$INSTALL_DIR \
+    -DCWRAP_CUSTOM_LUA=th \
+    -DLUAJIT_SYSTEM_MINILUA=$SCRIPT_ROOT_DIR/distro/exe/luajit-rocks/luajit-2.1/src/host/minilua \
+    -DLUAJIT_SYSTEM_BUILDVM=$SCRIPT_ROOT_DIR/distro/exe/luajit-rocks/luajit-2.1/src/host/buildvm \
     -DCMAKE_C_FLAGS="-DDISABLE_POSIX_MEMALIGN"
 
 make install
