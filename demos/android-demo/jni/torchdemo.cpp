@@ -13,15 +13,18 @@ extern "C" {
   JNIEXPORT jstring JNICALL
   Java_com_torch_torchdemo_TorchDemo_callTorch( JNIEnv* env,
                                                 jobject thiz,
-                                                jobject assetManager) {
+                                                jobject assetManager,
+						jstring nativeLibraryDir_
+						) {
     D("Hello from C");
     // get native asset manager
     AAssetManager* manager = AAssetManager_fromJava(env, assetManager);
     assert( NULL != manager);
+    const char *nativeLibraryDir = env->GetStringUTFChars(nativeLibraryDir_, 0);
     
     char buffer[4096]; // buffer for textview output
     
-    lua_State *L = inittorch(manager); // create a lua_State
+    lua_State *L = inittorch(manager, nativeLibraryDir); // create a lua_State
     // load and run file
     char file[] = "main.lua";
     int ret;

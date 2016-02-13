@@ -1,6 +1,7 @@
 LOCAL_PATH := $(call my-dir)
 
 TH_LIB_DIR=../../../install/libs/${APP_ABI}
+LOCAL_C_INCLUDES += ../../install/include
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := luaT
@@ -22,74 +23,6 @@ LOCAL_MODULE := lua
 LOCAL_SRC_FILES := ${TH_LIB_DIR}/liblua.so
 include $(PREBUILT_SHARED_LIBRARY)
 
-include $(CLEAR_VARS)
-LOCAL_MODULE := threadsmain
-LOCAL_SRC_FILES := ${TH_LIB_DIR}/libthreadsmain.so
-include $(PREBUILT_SHARED_LIBRARY)
-
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := threads
-LOCAL_SRC_FILES := ${TH_LIB_DIR}/libthreads.so
-include $(PREBUILT_SHARED_LIBRARY)
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := nn
-LOCAL_SRC_FILES := ${TH_LIB_DIR}/libnn.so
-include $(PREBUILT_SHARED_LIBRARY)
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := nnx
-LOCAL_SRC_FILES := ${TH_LIB_DIR}/libnnx.so
-include $(PREBUILT_SHARED_LIBRARY)
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := image
-LOCAL_SRC_FILES := ${TH_LIB_DIR}/libimage.so
-include $(PREBUILT_SHARED_LIBRARY)
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := cutorch
-LOCAL_SRC_FILES := ${TH_LIB_DIR}/libcutorch.so
-include $(PREBUILT_SHARED_LIBRARY)
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := paths
-LOCAL_SRC_FILES := ${TH_LIB_DIR}/libpaths.so
-include $(PREBUILT_SHARED_LIBRARY)
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := ppm
-LOCAL_SRC_FILES := ${TH_LIB_DIR}/libppm.so
-include $(PREBUILT_SHARED_LIBRARY)
-
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := sys
-LOCAL_SRC_FILES := ${TH_LIB_DIR}/libsys.so
-include $(PREBUILT_SHARED_LIBRARY)
-
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := sundown
-LOCAL_SRC_FILES := ${TH_LIB_DIR}/libsundown.so
-include $(PREBUILT_SHARED_LIBRARY)
-
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := THC
-LOCAL_SRC_FILES := ${TH_LIB_DIR}/libTHC.so
-include $(PREBUILT_SHARED_LIBRARY)
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := THCUNN
-LOCAL_SRC_FILES := ${TH_LIB_DIR}/libTHCUNN.so
-include $(PREBUILT_SHARED_LIBRARY)
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := THNN
-LOCAL_SRC_FILES := ${TH_LIB_DIR}/libTHNN.so
-include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := torchdemo
