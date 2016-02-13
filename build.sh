@@ -51,14 +51,14 @@ NDK=$ANDROID_NDK
 NDKABI=21
 NDKVER=$NDK/toolchains/arm-linux-androideabi-4.9
 if [[ "$unamestr" == 'Linux' ]]; then
-    export NDKP=$NDKVER/prebuilt/linux-x86/bin/arm-linux-androideabi-
+    export NDKP=$NDKVER/prebuilt/linux-x86_64/bin/arm-linux-androideabi-
 elif [[ "$unamestr" == 'Darwin' ]]; then
     export NDKP=$NDKVER/prebuilt/darwin-x86_64/bin/arm-linux-androideabi-
 fi
 NDKF="--sysroot $NDK/platforms/android-$NDKABI/arch-arm"
 NDKARCH="-march=armv7-a -mfloat-abi=softfp -Wl,--fix-cortex-a8"
 
-# make clean
+make clean
 make HOST_CC="gcc -m32" CC="gcc" HOST_SYS=$unamestr TARGET_SYS=Linux CROSS=$NDKP TARGET_FLAGS="$NDKF $NDKARCH"
 
 
