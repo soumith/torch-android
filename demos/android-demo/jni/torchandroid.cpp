@@ -5,20 +5,14 @@
 void android_fopen_set_asset_manager(AAssetManager* manager);
 FILE* android_fopen(const char* fname, const char* mode);
 
-
-
 static const luaL_reg lualibs[] =
   {
     { "base",       luaopen_base },
-    { "libtorch",   luaopen_libtorch },
-    { "nn",         luaopen_libnn },
-    { "nnx",        luaopen_libnnx },
-    { "image",      luaopen_libimage },
     { NULL,         NULL }
   };
 
 // function to open up all the Lua libraries you declared above
-lua_State* openlualibs(lua_State *l)
+static lua_State* openlualibs(lua_State *l)
 {
   luaL_openlibs(l);
   const luaL_reg *lib;
@@ -86,8 +80,8 @@ extern int loader_android (lua_State *L) {
   char pname[4096];
   char *filebytes;
   long size;
-  // try lua/share/lua/5.1/torch.lua
-  strlcpy(pname, "lua/share/lua/5.1/", sizeof(pname));
+  // try lua/5.1/torch.lua
+  strlcpy(pname, "lua/5.1/", sizeof(pname));
   strlcat(pname, name, sizeof(pname));
   strlcat(pname, ".lua", sizeof(pname));
   size = android_asset_get_size(pname);
@@ -96,9 +90,9 @@ extern int loader_android (lua_State *L) {
     luaL_loadbuffer(L, filebytes, size, name);
     return 1;    
   }
-  // try lua/share/lua/5.1/torch/init.lua
+  // try lua/5.1/torch/init.lua
   pname[0] = '\0';
-  strlcpy(pname, "lua/share/lua/5.1/", sizeof(pname));
+  strlcpy(pname, "lua/5.1/", sizeof(pname));
   strlcat(pname, name, sizeof(pname));
   strlcat(pname, "/init.lua", sizeof(pname));
   size = android_asset_get_size(pname);
@@ -110,7 +104,7 @@ extern int loader_android (lua_State *L) {
   return 1;
 }
 
-lua_State* inittorch(AAssetManager* manager) {
+lua_State* inittorch(AAssetManager* manager, const char* libpath) {
   /* Declare a Lua State, open the Lua State */
   lua_State *L;
   L = lua_open();
@@ -118,8 +112,21 @@ lua_State* inittorch(AAssetManager* manager) {
   android_fopen_set_asset_manager(manager);
   openlualibs(L);
   luaopen_landroidprint(L);
+  // concat libpath to package.cpath
+  lua_getglobal(L, "package");
+  lua_getfield(L, -1, "cpath");
+  const char* current_cpath = lua_tostring(L, -1);
+  lua_pop(L, 1);
+  char final_cpath[4096];
+  strcpy(final_cpath, libpath);
+  strcat(final_cpath, "/?.so;");
+  strcat(final_cpath, current_cpath);
+  lua_pushstring(L, final_cpath);
+  lua_setfield(L, -2, "cpath");
+  lua_pop(L, 1); // balance stack
+
   // add an android module loader to package.loaders
-  lua_getglobal(L, "package");        
+  lua_getglobal(L, "package");
   lua_getfield(L, -1, "loaders");
   int numloaders = lua_objlen(L, -1);
   lua_pushcfunction(L, loader_android);

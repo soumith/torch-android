@@ -3,9 +3,9 @@ ndk-build
 if [ $? -ne 0 ]; then
     exit
 fi
-rm -rf assets/lua/*
-mkdir -p assets/lua/share
-cp -r ../share assets/lua/
+rm -rf assets/lua
+cp -r ../../install/share/lua assets/
+cp -r ../../install/libs/armeabi-v7a/*.so libs/armeabi-v7a/
 ant debug
 if [ $? -ne 0 ]; then
     exit
