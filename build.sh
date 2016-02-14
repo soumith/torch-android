@@ -39,7 +39,7 @@ NDK=$ANDROID_NDK
 NDKABI=21
 NDKVER=$NDK/toolchains/arm-linux-androideabi-4.9
 if [[ "$unamestr" == 'Linux' ]]; then
-    export NDKP=$NDKVER/prebuilt/linux-x86/bin/arm-linux-androideabi-
+    export NDKP=$NDKVER/prebuilt/linux-x86_64/bin/arm-linux-androideabi-
 elif [[ "$unamestr" == 'Darwin' ]]; then
     export NDKP=$NDKVER/prebuilt/darwin-x86_64/bin/arm-linux-androideabi-
 fi
