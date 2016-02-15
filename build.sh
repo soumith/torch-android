@@ -1,5 +1,9 @@
 #!/bin/bash
-# have ndk-build in your $PATH and the script figures out where your ANDROID_NDK is at
+# have ndk-build in your $PATH and the script figures out where your ANDROID_NDK is at.
+# optionally, modify the variables below as needed.
+NDKABI=21
+NDKVER=$NDK/toolchains/arm-linux-androideabi-4.9
+
 ####################################################
 # You do not need to modify anything below this line
 ####################################################
@@ -36,8 +40,6 @@ set +e # hard errors
 # Build host luajit for minilua and buildvm
 cd distro/exe/luajit-rocks/luajit-2.1
 NDK=$ANDROID_NDK
-NDKABI=21
-NDKVER=$NDK/toolchains/arm-linux-androideabi-4.9
 if [[ "$unamestr" == 'Linux' ]]; then
     export NDKP=$NDKVER/prebuilt/linux-x86_64/bin/arm-linux-androideabi-
 elif [[ "$unamestr" == 'Darwin' ]]; then

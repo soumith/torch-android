@@ -17,6 +17,9 @@ Features
 * torchandroid.h and torchandroid.cpp give lots of helper functions to make life easier
   * Print function overriden to redirect to logcat (only handles strings for now)
   * Function to get apk assets as bytes (very useful)
+* Full support for ffi and shared libraries
+
+`torch.load` now takes three additional modes: `apkbinary32`, `apkbinary64`, `apkascii`. One can store model files in the `assets` folder and use these modes to load them. If the model was saved on a 64-bit machine, use `apkbinary64`, if it was saved on a 32-bit machine, use `apkbinary32`.
 
 
 Requirements
@@ -25,30 +28,30 @@ Android NDK and Android SDK
 
 Samples
 --------
-* A sample project has been provided in android-demo
-* android-demo/jni/torchdemo.cpp is a simple use-case
-* android-demo/assets/main.lua is the file that is run
-* Vinayak Ghokale from e-lab Purdue (https://github.com/e-lab) contributed a face detector demo, which showcases a fuller use-case.
-* That's in the facedetector_e-lab folder. I made some changes to it to load assets etc. from apk as opposed to the sdcard, but it remains untouched otherwise.
+* Three sample projects has been provided in demos/
+* demos/android-demo/jni/torchdemo.cpp is a simple use-case
+* demos/android-demo/assets/main.lua is the file that is run
+* demos/android-demo-cifar showcases classifying Camera inputs (or images from gallery) into one of 10 CIFAR-10 categories.
+* Vinayak Ghokale from e-lab Purdue (https://github.com/e-lab) contributed a face detector demo, which showcases a fuller use-case (demos/facedetector_e-lab ).
 
-Building Torch
+Building Torch-Android
 --------------
 1. open build.sh and modify ANDROID_NDK to your android ndk path.
 2. run build script
-$ sh build.sh
+$ ./build.sh
 
 You can use torch in your android apps. The relevant directories are
-* include - include directories
-* lib - static libs cross-compiled for armeabi-v7a
-* share - lua files
+* install/include - include directories
+* install/lib - static libs cross-compiled for armeabi-v7a
+* install/share/lua - lua files
 
 
 Building Example
 ----------------
-1. Build Torch atleast once using the steps above.
+1. Build Torch-Android atleast once using the steps above.
 2. [Optional] Connect your android phone in debugging mode,
               to automatically install the apk.
-3. Change directory into android-demo folder.
+3. Change directory into demos/android-demo folder.
 4. Run build script.
-$ sh build.sh
+$ ./build.sh
 5. Run the app TorchDemo on your phone.
