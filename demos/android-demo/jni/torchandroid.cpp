@@ -1,7 +1,8 @@
 #include "torchandroid.h"
 
 #include <android/asset_manager.h>
-
+#include <TH/TH.h>
+#include <THApkFile.h>
 void android_fopen_set_asset_manager(AAssetManager* manager);
 FILE* android_fopen(const char* fname, const char* mode);
 
@@ -110,6 +111,7 @@ lua_State* inittorch(AAssetManager* manager, const char* libpath) {
   L = lua_open();
   // set the asset manager
   android_fopen_set_asset_manager(manager);
+  THApkFile_setAAssetManager((void *) manager);
   openlualibs(L);
   luaopen_landroidprint(L);
   // concat libpath to package.cpath

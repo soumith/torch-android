@@ -25,7 +25,7 @@
 --
 -- Clement Farabet
 ----------------------------------------------------------------------
-
+require 'torchandroid'
 require 'torch'
 require 'nn'
 require 'nnx'
@@ -46,7 +46,7 @@ classes = {'airplane', 'automobile', 'bird', 'cat',
 
 print('load pretrained network file')
 -- load pretrained network file from apk's asset folder
-model=torch.load('cifar.net','r','apk')
+model=torch.load('cifar.net','apkbinary32')
 
 -- retrieve parameters and gradients
 parameters,gradParameters = model:getParameters()
@@ -55,13 +55,13 @@ model:add(nn.LogSoftMax())
 criterion = nn.ClassNLLCriterion()
 
 -- read mean & std values
-mean_u=torch.load('mean_u','r','apk')
+mean_u=torch.load('mean_u', 'apkbinary32')
 --print('mean_u ' .. mean_u)
-mean_v=torch.load('mean_v','r','apk')
+mean_v=torch.load('mean_v', 'apkbinary32')
 --print('mean_v ' .. mean_v)
-std_u=torch.load('std_u','r','apk')
+std_u=torch.load('std_u', 'apkbinary32')
 --print('std_u ' .. std_u)
-std_v=torch.load('std_v','r','apk')
+std_v=torch.load('std_v', 'apkbinary32')
 --print('std_v ' .. std_v)
 
 
@@ -72,7 +72,7 @@ function testTorchData()
    tesize = 1000
 
    -- load dataset
-   subset = torch.load('/sdcard/Cifar/test_batch.t7', 'ascii', 'r')
+   subset = torch.load('/sdcard/Cifar/test_batch.t7', 'ascii')
    testData = {
       data = subset.data:t():double(),
       labels = subset.labels[1]:double(),

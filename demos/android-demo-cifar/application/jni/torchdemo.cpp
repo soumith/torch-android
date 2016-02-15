@@ -28,14 +28,17 @@ void PrintTable(lua_State *L, int tableSize, int *tableContents) {
 }
 
 JNIEXPORT long JNICALL
-Java_com_torchandroid_cifardemo_lua_LuaManager_initTorch(JNIEnv *env, jobject thiz, jobject assetManager)
+Java_com_torchandroid_cifardemo_lua_LuaManager_initTorch(JNIEnv *env, jobject thiz, jobject assetManager,
+							 jstring nativeLibraryDir_)
 {
 	// get native asset manager. This allows access to files stored in the assets folder
 	AAssetManager* manager = AAssetManager_fromJava(env, assetManager);
 	assert( NULL != manager);
 
+	const char *nativeLibraryDir = env->GetStringUTFChars(nativeLibraryDir_, 0);
+
 	lua_State *L = NULL;
-	L = inittorch(manager);// create a lua_State
+	L = inittorch(manager, nativeLibraryDir);// create a lua_State
 
 	// load and run file
 	char file[] = "init-only.lua";

@@ -2,6 +2,7 @@ package com.torchandroid.cifardemo.lua;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.content.pm.ApplicationInfo;
 
 public class LuaManager {
 
@@ -18,7 +19,7 @@ public class LuaManager {
 
 	private native float testTorchData(long stateLocation);
 
-	public native long initTorch(AssetManager manager);
+        public native long initTorch(AssetManager manager, String libdir);
 
 	public native void destroyTorch(long stateLocation);
 
@@ -34,7 +35,8 @@ public class LuaManager {
 	}
 
 	private LuaManager(Context context) {
-		mTorchState = initTorch(context.getAssets());
+	    ApplicationInfo info = context.getApplicationInfo();
+	    mTorchState = initTorch(context.getAssets(), info.nativeLibraryDir);
 	}
 
 	@Override

@@ -43,7 +43,8 @@ if [[ "$unamestr" == 'Linux' ]]; then
 elif [[ "$unamestr" == 'Darwin' ]]; then
     export NDKP=$NDKVER/prebuilt/darwin-x86_64/bin/arm-linux-androideabi-
 fi
-NDKF="--sysroot $NDK/platforms/android-$NDKABI/arch-arm"
+NDK_SYSROOT=$NDK/platforms/android-$NDKABI/arch-arm
+NDKF="--sysroot $NDK_SYSROOT"
 NDKARCH="-march=armv7-a -mfloat-abi=softfp -Wl,--fix-cortex-a8"
 
 # make clean
@@ -60,7 +61,9 @@ cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/android.toolchain.cmake -DWITH_LUAJIT21
     -DCWRAP_CUSTOM_LUA=th \
     -DLUAJIT_SYSTEM_MINILUA=$SCRIPT_ROOT_DIR/distro/exe/luajit-rocks/luajit-2.1/src/host/minilua \
     -DLUAJIT_SYSTEM_BUILDVM=$SCRIPT_ROOT_DIR/distro/exe/luajit-rocks/luajit-2.1/src/host/buildvm \
-    -DCMAKE_C_FLAGS="-DDISABLE_POSIX_MEMALIGN"
+    -DCMAKE_C_FLAGS="-DDISABLE_POSIX_MEMALIGN" \
+    -DANDROID_NDK_SYSROOT_INCLUDE="$NDK_SYSROOT/usr/include" \
+    -DANDROID_NDK_SYSROOT_LIBDIR="$NDK_SYSROOT/usr/lib"
 
 make install
 
