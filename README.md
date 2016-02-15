@@ -36,6 +36,7 @@ Samples
 
 Building Torch-Android
 --------------
+0. git submodule update --init --recursive
 1. open build.sh and modify ANDROID_NDK to your android ndk path.
 2. run build script
 $ ./build.sh
