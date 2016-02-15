@@ -36,6 +36,8 @@ Samples
 
 Building Torch-Android
 --------------
+If on ubuntu, install the following packages: `sudo apt-get install libx32gcc-4.8-dev libc6-dev-i386`
+
 0. git submodule update --init --recursive
 1. open build.sh and modify ANDROID_NDK to your android ndk path.
 2. run build script
