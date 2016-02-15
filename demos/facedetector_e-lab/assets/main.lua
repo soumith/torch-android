@@ -5,13 +5,13 @@
 --The function "getDetections" is called for each frame and detections
 --are sent back to C as x,y coordinates and height and width of the box to be drawn.
 
-android=1
+require 'torchandroid'
 require 'torch'
 require 'nnx'
 require 'dok'
 require 'image'
 
-network = torch.load('face.net.arm','r','apk'):float()
+network = torch.load('face.net.arm','apkbinary32'):float()
 
 --Default tensor is float. This is proven to be faster than double when using SIMD
 torch.setdefaulttensortype('torch.FloatTensor')

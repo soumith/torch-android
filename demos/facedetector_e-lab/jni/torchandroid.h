@@ -39,6 +39,6 @@ extern "C" {
   char* android_asset_get_bytes(const char *name);
   long android_asset_get_size(const char *name);
 }
-lua_State* inittorch(AAssetManager* m);
+lua_State* inittorch(AAssetManager* m, const char* libpath);
 
 #endif // __TORCHANDROID_H__

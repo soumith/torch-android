@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import android.content.pm.ApplicationInfo;
 
 public class CameraActivity extends Activity
 {
@@ -24,6 +24,7 @@ public class CameraActivity extends Activity
 	private CameraClass camPreview;
 	private int PreviewSizeWidth, PreviewSizeHeight;
 	static AssetManager assetManager;
+        static String nativeLibraryDir;
 	static TextView detailsText;
 	Button back;
 	
@@ -37,6 +38,8 @@ public class CameraActivity extends Activity
 	    requestWindowFeature(Window.FEATURE_NO_TITLE);  
 	    
 	    assetManager = getAssets();
+	    ApplicationInfo info = getApplicationInfo();
+	    nativeLibraryDir = info.nativeLibraryDir;
 
 	    setContentView(R.layout.activity_camera);
 

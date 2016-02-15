@@ -13,6 +13,7 @@ import android.os.Looper;
 import android.os.SystemClock;
 import android.view.SurfaceHolder;
 import android.widget.ImageView;
+import android.content.pm.ApplicationInfo;
 
 public class CameraClass implements SurfaceHolder.Callback, Camera.PreviewCallback
 {
@@ -109,7 +110,7 @@ public class CameraClass implements SurfaceHolder.Callback, Camera.PreviewCallba
     public native float callTorch(long stateLocation, int width, int height,
 				  byte[] NV21FrameData, int[] pixels);
 	 
-    public native long initTorch(AssetManager manager);
+    public native long initTorch(AssetManager manager, String libdir);
 
     public native void destroyTorch(long stateLocation);
 	 
@@ -147,8 +148,9 @@ public class CameraClass implements SurfaceHolder.Callback, Camera.PreviewCallba
 
     public void init()
     {
-	if(torchState == 0)
-	    torchState = initTorch(CameraActivity.assetManager);
+	if(torchState == 0) {
+	    torchState = initTorch(CameraActivity.assetManager, CameraActivity.nativeLibraryDir);
+	}
     }
 	
     public void destroy()
