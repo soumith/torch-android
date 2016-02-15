@@ -1,0 +1,3 @@
+[submodule "distro"]
+	path = distro
+	url = https://github.com/torch/distro
