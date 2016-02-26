@@ -9,7 +9,7 @@
 #include <assert.h>
 
 extern "C" {
-  
+
   JNIEXPORT jstring JNICALL
   Java_com_torch_torchdemo_TorchDemo_callTorch( JNIEnv* env,
                                                 jobject thiz,
@@ -21,10 +21,15 @@ extern "C" {
     AAssetManager* manager = AAssetManager_fromJava(env, assetManager);
     assert( NULL != manager);
     const char *nativeLibraryDir = env->GetStringUTFChars(nativeLibraryDir_, 0);
-    
     char buffer[4096]; // buffer for textview output
-    
+
+    D("nativeLibraryDir=%s", nativeLibraryDir);
+
+    buffer[0] = 0;
+
     lua_State *L = inittorch(manager, nativeLibraryDir); // create a lua_State
+    assert( NULL != manager);
+
     // load and run file
     char file[] = "main.lua";
     int ret;
@@ -33,10 +38,10 @@ extern "C" {
       char *filebytes = android_asset_get_bytes(file);
       ret = luaL_dobuffer(L, filebytes, size, "main");
     }
+
     // check if script ran succesfully. If not, print error to logcat
     if (ret == 1) {
-      D("Error doing resource: %s\n", file);
-      D(lua_tostring(L,-1));
+      D("Error doing resource: %s:%s\n", file, lua_tostring(L,-1));
       strlcat(buffer, lua_tostring(L,-1), sizeof(buffer));
     }
     else
@@ -47,5 +52,5 @@ extern "C" {
     lua_close(L);
     return env->NewStringUTF(buffer);
   }
-  
+
 }

@@ -1,8 +1,9 @@
 #include "torchandroid.h"
 
 #include <android/asset_manager.h>
-#include <TH/TH.h>
-#include <THApkFile.h>
+#include "TH/TH.h"
+#include "THApkFile.h"
+
 void android_fopen_set_asset_manager(AAssetManager* manager);
 FILE* android_fopen(const char* fname, const char* mode);
 
@@ -20,7 +21,7 @@ static lua_State* openlualibs(lua_State *l)
   int ret;
   for (lib = lualibs; lib->func != NULL; lib++)
     {
-      lib->func(l);      
+      lib->func(l);
       lua_settop(l, 0);
     }
   return l;
@@ -77,10 +78,18 @@ char* android_asset_get_bytes(const char *name) {
 
 extern int loader_android (lua_State *L) {
   const char* name = lua_tostring(L, -1);
-  name = luaL_gsub(L, name, ".", LUA_DIRSEP);
   char pname[4096];
+
+  sprintf(pname,"loader_android: name=%s", name);
+  D(pname);
+
+  name = luaL_gsub(L, name, ".", LUA_DIRSEP);
+  sprintf(pname,"loader_android: name=%s", name);
+  D(pname);
+
   char *filebytes;
   long size;
+
   // try lua/5.1/torch.lua
   strlcpy(pname, "lua/5.1/", sizeof(pname));
   strlcat(pname, name, sizeof(pname));
@@ -89,7 +98,7 @@ extern int loader_android (lua_State *L) {
   if (size != -1) {
     filebytes = android_asset_get_bytes(pname);
     luaL_loadbuffer(L, filebytes, size, name);
-    return 1;    
+    return 1;
   }
   // try lua/5.1/torch/init.lua
   pname[0] = '\0';
@@ -100,8 +109,10 @@ extern int loader_android (lua_State *L) {
   if (size != -1) {
     filebytes = android_asset_get_bytes(pname);
     luaL_loadbuffer(L, filebytes, size, name);
-    return 1;    
+    return 1;
   }
+  sprintf(pname,"loader_android: name=%s failed", name);
+  D(pname);
   return 1;
 }
 
@@ -114,6 +125,7 @@ lua_State* inittorch(AAssetManager* manager, const char* libpath) {
   THApkFile_setAAssetManager((void *) manager);
   openlualibs(L);
   luaopen_landroidprint(L);
+
   // concat libpath to package.cpath
   lua_getglobal(L, "package");
   lua_getfield(L, -1, "cpath");
@@ -123,6 +135,7 @@ lua_State* inittorch(AAssetManager* manager, const char* libpath) {
   strcpy(final_cpath, libpath);
   strcat(final_cpath, "/?.so;");
   strcat(final_cpath, current_cpath);
+
   lua_pushstring(L, final_cpath);
   lua_setfield(L, -2, "cpath");
   lua_pop(L, 1); // balance stack
@@ -132,9 +145,8 @@ lua_State* inittorch(AAssetManager* manager, const char* libpath) {
   lua_getfield(L, -1, "loaders");
   int numloaders = lua_objlen(L, -1);
   lua_pushcfunction(L, loader_android);
+
   lua_rawseti(L, -2, numloaders+1);
   lua_pop(L, 1);
   return L;
 }
-
-
