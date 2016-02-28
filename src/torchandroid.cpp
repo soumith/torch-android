@@ -80,16 +80,10 @@ extern int loader_android (lua_State *L) {
   const char* name = lua_tostring(L, -1);
   char pname[4096];
 
-  sprintf(pname,"loader_android: name=%s", name);
-  D(pname);
-
   name = luaL_gsub(L, name, ".", LUA_DIRSEP);
-  sprintf(pname,"loader_android: name=%s", name);
-  D(pname);
 
   char *filebytes;
   long size;
-
   // try lua/5.1/torch.lua
   strlcpy(pname, "lua/5.1/", sizeof(pname));
   strlcat(pname, name, sizeof(pname));
@@ -135,17 +129,14 @@ lua_State* inittorch(AAssetManager* manager, const char* libpath) {
   strcpy(final_cpath, libpath);
   strcat(final_cpath, "/?.so;");
   strcat(final_cpath, current_cpath);
-
   lua_pushstring(L, final_cpath);
   lua_setfield(L, -2, "cpath");
   lua_pop(L, 1); // balance stack
-
   // add an android module loader to package.loaders
   lua_getglobal(L, "package");
   lua_getfield(L, -1, "loaders");
   int numloaders = lua_objlen(L, -1);
   lua_pushcfunction(L, loader_android);
-
   lua_rawseti(L, -2, numloaders+1);
   lua_pop(L, 1);
   return L;

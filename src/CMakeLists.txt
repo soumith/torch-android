@@ -9,7 +9,7 @@ INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/distro/pkg/torch/lib ${CMAKE_BINARY_DIR}
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/distro/pkg/torch/lib/luaT)
 LINK_DIRECTORIES(${ANDROID_NDK_SYSROOT_LIBDIR})
 
-SET(src init.c torchandroid.cpp android_fopen.c)
+SET(src init.c torchandroid.cpp torchcall.cpp android_fopen.c)
 SET(luasrc init.lua)
 
 ADD_LIBRARY(torchandroid MODULE ${src})
