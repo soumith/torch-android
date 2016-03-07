@@ -10,10 +10,6 @@ file(DOWNLOAD https://raw.githubusercontent.com/borisfom/CMake/cuda_arch/Modules
 file(DOWNLOAD https://raw.githubusercontent.com/borisfom/CMake/cuda_arch/Modules/FindCUDA/select_compute_arch.cmake cmake/FindCUDA/select_compute_arch.cmake)
 
 FIND_PACKAGE(CUDA 7.0 REQUIRED)
-FIND_PACKAGE(CudaArch REQUIRED)
-
-FIND_PACKAGE(Torch REQUIRED)
-
 
 SET(CUDA_VERBOSE_BUILD ON)
 SET(ANDROID_STL gnustl_shared)

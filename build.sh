@@ -55,6 +55,9 @@ set +e # hard errors
 export CMAKE_INSTALL_SUBDIR="share/cmake/torch"
 
 cd $SCRIPT_ROOT_DIR
+rm -fr distro/extra/cutorch/cmake/
+rm -fr distro/extra/cunn/cmake/
+
 # Build host luajit for minilua and buildvm
 cd distro/exe/luajit-rocks/luajit-2.1
 NDK=$ANDROID_NDK
