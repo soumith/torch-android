@@ -54,12 +54,7 @@ echo "INSTALL_DIR=${INSTALL_DIR}"
 set +e # hard errors
 export CMAKE_INSTALL_SUBDIR="share/cmake/torch"
 
-#Install custom FindCUDA for incremental builds
-(cd ${SCRIPT_ROOT_DIR}/distro/extra/FindCUDA && (cmake -E make_directory build && cd build && cmake ..  \
- -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="${INSTALL_DIR}" -DCMAKE_INSTALL_SUBDIR="${CMAKE_INSTALL_SUBDIR}" && make install))
-
-echo "Done installing FindCUDA"
-
+cd $SCRIPT_ROOT_DIR
 # Build host luajit for minilua and buildvm
 cd distro/exe/luajit-rocks/luajit-2.1
 NDK=$ANDROID_NDK
@@ -76,8 +71,6 @@ NDKARCH="$M_ARCH -mfloat-abi=softfp -Wl,--fix-cortex-a8"
 # make clean
 $MAKE $MAKEARGS HOST_CC="gcc -m32" CC="gcc" HOST_SYS=$unamestr TARGET_SYS=Linux CROSS=$NDKP TARGET_FLAGS="$NDKF $NDKARCH"
 
-echo "Done installing Lua"
-
 cd $SCRIPT_ROOT_DIR
 
 mkdir -p build
@@ -86,6 +79,7 @@ cd build
 cmake .. -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_TOOLCHAIN_FILE=$SCRIPT_ROOT_DIR/cmake/android.toolchain.cmake \
     -DANDROID_NDK=${ANDROID_NDK} -DANDROID_ABI="${APP_ABI}" \
     -DCUDA_ARCH_NAME=${COMPUTE_NAME} \
+    -DWITH_CUDA=ON -DWITH_LUAROCKS=OFF -DWITH_LUAJIT21=ON\
     -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DCMAKE_INSTALL_SUBDIR=${CMAKE_INSTALL_SUBDIR} \
     -DLIBRARY_OUTPUT_PATH_ROOT="${INSTALL_DIR}" \
     -DLUAJIT_SYSTEM_MINILUA=$SCRIPT_ROOT_DIR/distro/exe/luajit-rocks/luajit-2.1/src/host/minilua \
@@ -93,6 +87,9 @@ cmake .. -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_TOOLCHAIN_FILE=$SCRIPT_ROOT_DIR/cma
     -DCMAKE_C_FLAGS="-DDISABLE_POSIX_MEMALIGN" \
 
 echo " -------------- Configuring DONE ---------------"  \
+
+
+echo "Done installing Lua"
 
 
 (cd distro/exe && $MAKE $MAKEARGS install) || exit 1
