@@ -55,9 +55,12 @@ set +e # hard errors
 export CMAKE_INSTALL_SUBDIR="share/cmake/torch"
 
 cd $SCRIPT_ROOT_DIR
-rm -fr distro/extra/cutorch/cmake/
-rm -fr distro/extra/cunn/cmake/
 
+cd distro/extra/FindCUDA && \
+    (cmake -E make_directory build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="${INSTALL_DIR}" -DCMAKE_INSTALL_SUBDIR="${CMAKE_INSTALL_SUBDIR}" && make install) \
+    && echo "FindCuda installed" || exit 1
+
+cd $SCRIPT_ROOT_DIR
 # Build host luajit for minilua and buildvm
 cd distro/exe/luajit-rocks/luajit-2.1
 NDK=$ANDROID_NDK

@@ -1,15 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 option(CUDA_USE_STATIC_CUDA_RUNTIME "use static runtime" OFF)
 
-SET(CMAKE_MODULE_PATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_SUBDIR}" "${CMAKE_BINARY_DIR}/cmake" "${CMAKE_SOURCE_DIR}/cmake"  ${CMAKE_MODULE_PATH})
-
-file(DOWNLOAD https://raw.githubusercontent.com/borisfom/CMake/cuda_arch/Modules/FindCUDA.cmake cmake/FindCUDA.cmake)
-file(DOWNLOAD https://raw.githubusercontent.com/borisfom/CMake/cuda_arch/Modules/FindCUDA/run_nvcc.cmake cmake/FindCUDA/run_nvcc.cmake)
-file(DOWNLOAD https://raw.githubusercontent.com/borisfom/CMake/cuda_arch/Modules/FindCUDA/parse_cubin.cmake cmake/FindCUDA/parse_cubin.cmake)
-file(DOWNLOAD https://raw.githubusercontent.com/borisfom/CMake/cuda_arch/Modules/FindCUDA/make2cmake.cmake cmake/FindCUDA/make2cmake.cmake)
-file(DOWNLOAD https://raw.githubusercontent.com/borisfom/CMake/cuda_arch/Modules/FindCUDA/select_compute_arch.cmake cmake/FindCUDA/select_compute_arch.cmake)
-
-FIND_PACKAGE(CUDA 7.0 REQUIRED)
+SET(CMAKE_MODULE_PATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_SUBDIR}"  ${CMAKE_MODULE_PATH})
 
 SET(CUDA_VERBOSE_BUILD ON)
 SET(ANDROID_STL gnustl_shared)
