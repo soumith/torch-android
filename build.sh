@@ -4,6 +4,22 @@
 NDKABI=21
 NDKVER=toolchains/arm-linux-androideabi-4.9
 
+NVCC=`which nvcc`
+APP_ABI="armeabi-v7a with NEON"
+M_ARCH="-march=armv7-a"
+ABI_NAME=armv7-linux-androideabi
+COMPUTE_NAME=Kepler-M
+
+# Uncomment for ARM64
+# APP_ABI=arm64-v8a
+# M_ARCH=-march=arm8-a
+# ABI_NAME=aarch64-linux-androideabi"
+# COMPUTE_NAME=Maxwell
+
+export MAKE=make
+export MAKEARGS=-j$(getconf _NPROCESSORS_ONLN)
+
+
 ####################################################
 # You do not need to modify anything below this line
 ####################################################
@@ -33,10 +49,18 @@ fi
 echo "Android NDK found at: $ANDROID_NDK"
 cd "$(dirname "$0")" # switch to script directory
 SCRIPT_ROOT_DIR=`pwd`
-INSTALL_DIR=$SCRIPT_ROOT_DIR/install
-
+export INSTALL_DIR=$SCRIPT_ROOT_DIR/install
+echo "INSTALL_DIR=${INSTALL_DIR}"
 set +e # hard errors
+export CMAKE_INSTALL_SUBDIR="share/cmake/torch"
 
+cd $SCRIPT_ROOT_DIR
+
+cd distro/extra/FindCUDA && \
+    (cmake -E make_directory build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="${INSTALL_DIR}" -DCMAKE_INSTALL_SUBDIR="${CMAKE_INSTALL_SUBDIR}" && make install) \
+    && echo "FindCuda installed" || exit 1
+
+cd $SCRIPT_ROOT_DIR
 # Build host luajit for minilua and buildvm
 cd distro/exe/luajit-rocks/luajit-2.1
 NDK=$ANDROID_NDK
@@ -48,27 +72,40 @@ elif [[ "$unamestr" == 'Darwin' ]]; then
 fi
 NDK_SYSROOT=$NDK/platforms/android-$NDKABI/arch-arm
 NDKF="--sysroot $NDK_SYSROOT"
-NDKARCH="-march=armv7-a -mfloat-abi=softfp -Wl,--fix-cortex-a8"
+NDKARCH="$M_ARCH -mfloat-abi=softfp -Wl,--fix-cortex-a8"
 
 # make clean
-make HOST_CC="gcc -m32" CC="gcc" HOST_SYS=$unamestr TARGET_SYS=Linux CROSS=$NDKP TARGET_FLAGS="$NDKF $NDKARCH"
-
+$MAKE $MAKEARGS HOST_CC="gcc -m32" CC="gcc" HOST_SYS=$unamestr TARGET_SYS=Linux CROSS=$NDKP TARGET_FLAGS="$NDKF $NDKARCH"
 
 cd $SCRIPT_ROOT_DIR
 
-# Build Lua
 mkdir -p build
 cd build
-cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/android.toolchain.cmake -DWITH_LUAJIT21=ON -DWITH_LUAROCKS=OFF \
-    -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DANDROID_STL=none -DLIBRARY_OUTPUT_PATH_ROOT=$INSTALL_DIR \
-    -DCWRAP_CUSTOM_LUA=th \
+
+cmake .. -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_TOOLCHAIN_FILE=$SCRIPT_ROOT_DIR/cmake/android.toolchain.cmake \
+    -DANDROID_NDK=${ANDROID_NDK} -DANDROID_ABI="${APP_ABI}" \
+    -DCUDA_ARCH_NAME=${COMPUTE_NAME} \
+    -DWITH_CUDA=ON -DWITH_LUAROCKS=OFF -DWITH_LUAJIT21=ON\
+    -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DCMAKE_INSTALL_SUBDIR=${CMAKE_INSTALL_SUBDIR} \
+    -DLIBRARY_OUTPUT_PATH_ROOT="${INSTALL_DIR}" \
     -DLUAJIT_SYSTEM_MINILUA=$SCRIPT_ROOT_DIR/distro/exe/luajit-rocks/luajit-2.1/src/host/minilua \
     -DLUAJIT_SYSTEM_BUILDVM=$SCRIPT_ROOT_DIR/distro/exe/luajit-rocks/luajit-2.1/src/host/buildvm \
     -DCMAKE_C_FLAGS="-DDISABLE_POSIX_MEMALIGN" \
-    -DANDROID_NDK_SYSROOT_INCLUDE="$NDK_SYSROOT/usr/include" \
-    -DANDROID_NDK_SYSROOT_LIBDIR="$NDK_SYSROOT/usr/lib"
 
-make install
+echo " -------------- Configuring DONE ---------------"  \
+
+
+echo "Done installing Lua"
+
+
+(cd distro/exe && $MAKE $MAKEARGS install) || exit 1
+(cd distro/pkg/cwrap && $MAKE $MAKEARGS install) || exit 1
+(cd distro/pkg && $MAKE $MAKEARGS install) || exit 1
+
+# Cutorch installs some headers/libs used by other modules in extra
+(cd distro/extra/cutorch && $MAKE $MAKEARGS install) || exit 1
+(cd distro/extra && $MAKE  $MAKEARGS install) || exit 1
+(cd src && $MAKE $MAKEARGS install) || exit 1
 
 cd ..
 
