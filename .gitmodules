@@ -2,3 +2,9 @@
 	path = distro
 	url = https://github.com/borisfom/distro
         branch = R5
+[submodule "external/libpng"]
+	path = external/libpng
+	url = https://github.com/android/platform_external_libpng
+[submodule "external/libjpeg"]
+	path = external/libjpeg
+	url = https://github.com/android/platform_external_jpeg
