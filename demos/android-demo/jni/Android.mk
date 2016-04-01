@@ -9,6 +9,6 @@ LOCAL_C_INCLUDES += ../../install/include
 
 LOCAL_SRC_FILES := torchdemo.cpp
 
-LOCAL_LDLIBS := -L ../../install/lib -L ../../install/libs/armeabi-v7a -lcunn -lTHCUNN -lcutorch -lnnx -limage  -lnn -lTHNN -ltorch  -lTH -lluaT -lluajit -ltorchandroid -llog -landroid
+LOCAL_LDLIBS := -L ../../install/lib -L ../../install/libs/armeabi-v7a -lTHCUNN -lcutorch -lnnx -limage  -lTHNN -ltorch  -lTH -lluaT -lluajit -ltorchandroid -llog -landroid
 
 include $(BUILD_SHARED_LIBRARY)
