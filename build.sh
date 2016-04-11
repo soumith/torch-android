@@ -10,12 +10,12 @@ if [[ "$ARCH" == "v8" ]]; then
     APP_ABI=arm64-v8a
     M_ARCH=-march=arm8-a
     ABI_NAME=aarch64-linux-androideabi
-    COMPUTE_NAME=Maxwell-M
+    COMPUTE_NAME=Maxwell+Tegra
 elif [[ "$ARCH" == "v7n" ]]; then
     APP_ABI="armeabi-v7a with NEON"
     M_ARCH="-march=armv7-a"
     ABI_NAME=armv7-linux-androideabi
-    COMPUTE_NAME=Kepler-M
+    COMPUTE_NAME=Kepler+Tegra
 elif [[ "$ARCH" == "v7" ]]; then
     APP_ABI="armeabi-v7a"
     M_ARCH="-march=armv7-a"
