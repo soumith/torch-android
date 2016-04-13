@@ -98,7 +98,7 @@ cd $SCRIPT_ROOT_DIR
 cd external && \
     (cmake -E make_directory build && cd build && do_cmake_config .. && make install) \
     && echo "externals installed" || exit 1
-5B
+
 cd $SCRIPT_ROOT_DIR
 # Build host luajit for minilua and buildvm
 cd distro/exe/luajit-rocks/luajit-2.1
