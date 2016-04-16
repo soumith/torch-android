@@ -1,10 +1,17 @@
 #!/bin/bash
 # have ndk-build in your $PATH and the script figures out where your ANDROID_NDK is at.
+
 # optionally, modify the variables below as needed.
 NDKABI=21
 NDKVER=toolchains/arm-linux-androideabi-4.9
 
+# Default architecture is V7+Neon
 ARCH=${ARCH:-"v7n"}
+
+# Default is to build with CUDA.
+# Make sure you installed https://developer.nvidia.com/codeworks-android.
+# Otherwise, set WITH_CUDA to OFF.
+WITH_CUDA=${WITH_CUDA:-"ON"}
 
 if [[ "$ARCH" == "v8" ]]; then
     APP_ABI=arm64-v8a
@@ -76,7 +83,7 @@ do_cmake_config() {
 cmake $1 -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_TOOLCHAIN_FILE=$SCRIPT_ROOT_DIR/cmake/android.toolchain.cmake \
     -DANDROID_NDK=${ANDROID_NDK} -DANDROID_ABI="${APP_ABI}" \
     -DCUDA_ARCH_NAME=${COMPUTE_NAME} \
-    -DWITH_CUDA=ON -DWITH_LUAROCKS=OFF -DWITH_LUAJIT21=ON\
+    -DWITH_CUDA=${WITH_CUDA} -DWITH_LUAROCKS=OFF -DWITH_LUAJIT21=ON\
     -DCUDA_USE_STATIC_CUDA_RUNTIME=OFF -DANDROID_STL_FORCE_FEATURES=OFF\
     -DANDROID_NATIVE_API_LEVEL=21 -DANDROID_STL=gnustl_shared\
     -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DCMAKE_INSTALL_SUBDIR=${CMAKE_INSTALL_SUBDIR} \

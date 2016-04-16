@@ -24,7 +24,8 @@ Features
 
 Requirements
 ------------
-Android NDK and Android SDK
+For CUDA-enabled version: NVIDIA CodeWorks for Android: https://developer.nvidia.com/codeworks-android.
+For CPU-only version : Android NDK and Android SDK
 
 Samples
 --------
@@ -37,11 +38,14 @@ Samples
 Building Torch-Android
 --------------
 If on ubuntu, install the following packages: `sudo apt-get install libx32gcc-4.8-dev libc6-dev-i386`
+Default is to build with CUDA - so make sure you installed NVIDIA CodeWorks for Android and its nvcc is in your PATH.
+Otherwise, set WITH_CUDA=OFF in build.sh
 
 0. git submodule update --init --recursive
 1. open build.sh and modify ANDROID_NDK to your android ndk path.
 2. run build script
-$ ./build.sh
+3 ./build.sh
+(to build
 
 You can use torch in your android apps. The relevant directories are
 * install/include - include directories
