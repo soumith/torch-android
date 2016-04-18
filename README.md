@@ -35,17 +35,16 @@ Samples
 * demos/android-demo-cifar showcases classifying Camera inputs (or images from gallery) into one of 10 CIFAR-10 categories.
 * Vinayak Ghokale from e-lab Purdue (https://github.com/e-lab) contributed a face detector demo, which showcases a fuller use-case (demos/facedetector_e-lab ).
 
-Building Torch-Android
+Building Torch-Android Libraries and Java class. 
 --------------
 If on ubuntu, install the following packages: `sudo apt-get install libx32gcc-4.8-dev libc6-dev-i386`
 Default is to build with CUDA - so make sure you installed NVIDIA CodeWorks for Android and its nvcc is in your PATH.
 Otherwise, set WITH_CUDA=OFF in build.sh
 
 0. git submodule update --init --recursive
-1. open build.sh and modify ANDROID_NDK to your android ndk path.
-2. run build script
-3 ./build.sh
-(to build
+1. Optionally, open build.sh and modify ARCH (to match your device architecture) and WITH_CUDA variables.
+2. run build script:
+3 ./build.sh 
 
 You can use torch in your android apps. The relevant directories are
 * install/include - include directories
