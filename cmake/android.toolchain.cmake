@@ -78,7 +78,7 @@
 #        "x86_64" - Intel64 instruction set (r1)
 #        "mips64" - MIPS64 instruction set (r6)
 #
-#    ANDROID_NATIVE_API_LEVEL=android-8 - level of Android API compile for.
+#    ANDROID_NATIVE_API_LEVEL=android-21 - level of Android API compile for.
 #      Option is read-only when standalone toolchain is used.
 #      Note: building for "android-L" requires explicit configuration.
 #
@@ -239,11 +239,11 @@ set( ANDROID_SUPPORTED_ABIS_mips "mips" )
 set( ANDROID_SUPPORTED_ABIS_mips64 "mips64" )
 
 # API level defaults
-set( ANDROID_DEFAULT_NDK_API_LEVEL 8 )
+set( ANDROID_DEFAULT_NDK_API_LEVEL 21 )
 set( ANDROID_DEFAULT_NDK_API_LEVEL_arm64 21 )
-set( ANDROID_DEFAULT_NDK_API_LEVEL_x86 9 )
+set( ANDROID_DEFAULT_NDK_API_LEVEL_x86 15 )
 set( ANDROID_DEFAULT_NDK_API_LEVEL_x86_64 21 )
-set( ANDROID_DEFAULT_NDK_API_LEVEL_mips 9 )
+set( ANDROID_DEFAULT_NDK_API_LEVEL_mips 15 )
 set( ANDROID_DEFAULT_NDK_API_LEVEL_mips64 21 )
 
 
