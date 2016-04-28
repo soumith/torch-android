@@ -3,7 +3,6 @@
 
 # optionally, modify the variables below as needed.
 NDKABI=21
-NDKVER=toolchains/arm-linux-androideabi-4.9
 
 # Default architecture is V7+Neon
 ARCH=${ARCH:-"v7n"}
@@ -15,14 +14,15 @@ WITH_CUDA=${WITH_CUDA:-"ON"}
 
 if [[ "$ARCH" == "v8" ]]; then
     APP_ABI=arm64-v8a
-    M_ARCH=-march=arm8-a
+    M_ARCH=-march=armv8-a
     ABI_NAME=aarch64-linux-androideabi
     COMPUTE_NAME=Maxwell+Tegra
+
 elif [[ "$ARCH" == "v7n" ]]; then
     APP_ABI="armeabi-v7a with NEON"
     M_ARCH="-march=armv7-a"
     ABI_NAME=armv7-linux-androideabi
-    COMPUTE_NAME=Kepler+Tegra
+    COMPUTE_NAME="Kepler+Tegra Maxwell+Tegra"
 elif [[ "$ARCH" == "v7" ]]; then
     APP_ABI="armeabi-v7a"
     M_ARCH="-march=armv7-a"
@@ -69,27 +69,43 @@ echo "INSTALL_DIR=${INSTALL_DIR}"
 set +e # hard errors
 export CMAKE_INSTALL_SUBDIR="share/cmake/torch"
 NDK=$ANDROID_NDK
-NDKVER=$NDK/$NDKVER
-if [[ "$unamestr" == 'Linux' ]]; then
-    export NDKP=$NDKVER/prebuilt/linux-x86_64/bin/arm-linux-androideabi-
-elif [[ "$unamestr" == 'Darwin' ]]; then
-    export NDKP=$NDKVER/prebuilt/darwin-x86_64/bin/arm-linux-androideabi-
-fi
+
+if [[ "$ARCH" == "v8" ]]; then
+PREBUILT_PREFIX=aarch64-linux-android-
+NDK_SYSROOT=$NDK/platforms/android-$NDKABI/arch-arm64
+NDKVER=toolchains/aarch64-linux-android-4.9
+NDKARCH="$M_ARCH -Wl,--fix-cortex-a8"
+HOST_CC="gcc"
+else
+PREBUILT_PREFIX=arm-linux-androideabi-
 NDK_SYSROOT=$NDK/platforms/android-$NDKABI/arch-arm
-NDKF="--sysroot $NDK_SYSROOT"
+NDKVER=toolchains/arm-linux-androideabi-4.9
 NDKARCH="$M_ARCH -mfloat-abi=softfp -Wl,--fix-cortex-a8"
+HOST_CC="gcc -m32"
+fi
+
+NDKF="--sysroot $NDK_SYSROOT"
+NDKVER=$NDK/$NDKVER
+
+
+if [[ "$unamestr" == 'Linux' ]]; then
+    export NDKP=$NDKVER/prebuilt/linux-x86_64/bin/${PREBUILT_PREFIX}
+elif [[ "$unamestr" == 'Darwin' ]]; then
+    export NDKP=$NDKVER/prebuilt/darwin-x86_64/bin/${PREBUILT_PREFIX}
+fi
+
+export CUDA_SELECT_NVCC_ARCH_TARGETS="${COMPUTE_NAME}"
 
 do_cmake_config() {
-cmake $1 -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_TOOLCHAIN_FILE=$SCRIPT_ROOT_DIR/cmake/android.toolchain.cmake \
-    -DANDROID_NDK=${ANDROID_NDK} -DANDROID_ABI="${APP_ABI}" \
-    -DCUDA_ARCH_NAME=${COMPUTE_NAME} \
+cmake $1 -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_TOOLCHAIN_FILE="$SCRIPT_ROOT_DIR/cmake/android.toolchain.cmake" \
+    -DANDROID_NDK="${ANDROID_NDK}" -DANDROID_ABI="${APP_ABI}" \
     -DWITH_CUDA=${WITH_CUDA} -DWITH_LUAROCKS=OFF -DWITH_LUAJIT21=ON\
     -DCUDA_USE_STATIC_CUDA_RUNTIME=OFF -DANDROID_STL_FORCE_FEATURES=OFF\
     -DANDROID_NATIVE_API_LEVEL=21 -DANDROID_STL=gnustl_shared\
-    -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DCMAKE_INSTALL_SUBDIR=${CMAKE_INSTALL_SUBDIR} \
+    -DCMAKE_INSTALL_PREFIX="$INSTALL_DIR" -DCMAKE_INSTALL_SUBDIR="${CMAKE_INSTALL_SUBDIR}" \
     -DLIBRARY_OUTPUT_PATH_ROOT="${INSTALL_DIR}" \
-    -DLUAJIT_SYSTEM_MINILUA=$SCRIPT_ROOT_DIR/distro/exe/luajit-rocks/luajit-2.1/src/host/minilua \
-    -DLUAJIT_SYSTEM_BUILDVM=$SCRIPT_ROOT_DIR/distro/exe/luajit-rocks/luajit-2.1/src/host/buildvm \
+    -DLUAJIT_SYSTEM_MINILUA="$SCRIPT_ROOT_DIR/distro/exe/luajit-rocks/luajit-2.1/src/host/minilua" \
+    -DLUAJIT_SYSTEM_BUILDVM="$SCRIPT_ROOT_DIR/distro/exe/luajit-rocks/luajit-2.1/src/host/buildvm" \
     -DCMAKE_C_FLAGS="-DDISABLE_POSIX_MEMALIGN"
 echo " -------------- Configuring DONE ---------------"
 }
@@ -111,7 +127,7 @@ cd $SCRIPT_ROOT_DIR
 cd distro/exe/luajit-rocks/luajit-2.1
 
 # make clean
-$MAKE $MAKEARGS HOST_CC="gcc -m32" CC="gcc" HOST_SYS=$unamestr TARGET_SYS=Linux CROSS=$NDKP TARGET_FLAGS="$NDKF $NDKARCH"
+$MAKE $MAKEARGS HOST_CC="$HOST_CC" CC="gcc" HOST_SYS=$unamestr TARGET_SYS=Linux CROSS=$NDKP TARGET_FLAGS="$NDKF $NDKARCH"
 
 echo "Done installing Lua"
 
@@ -126,7 +142,10 @@ cd build
 (cd distro/pkg && $MAKE $MAKEARGS install) || exit 1
 
 # Cutorch installs some headers/libs used by other modules in extra
-(cd distro/extra/cutorch && $MAKE $MAKEARGS install) || exit 1
+if [[ "$WITH_CUDA" == "ON" ]]; then
+    (cd distro/extra/cutorch && $MAKE $MAKEARGS install) || exit 1
+fi
+
 (cd distro/extra && $MAKE  $MAKEARGS install) || exit 1
 (cd src && $MAKE $MAKEARGS install) || exit 1
 
