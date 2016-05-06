@@ -17,17 +17,20 @@ if [[ "$ARCH" == "v8" ]]; then
     M_ARCH=-march=armv8-a
     ABI_NAME=aarch64-linux-androideabi
     COMPUTE_NAME=Maxwell+Tegra
-
 elif [[ "$ARCH" == "v7n" ]]; then
     APP_ABI="armeabi-v7a with NEON"
     M_ARCH="-march=armv7-a"
     ABI_NAME=armv7-linux-androideabi
     COMPUTE_NAME="Kepler+Tegra Maxwell+Tegra"
+    LOCAL_ARM_NEON=true
+    ARCH_ARM_HAVE_NEON=true
 elif [[ "$ARCH" == "v7" ]]; then
     APP_ABI="armeabi-v7a"
     M_ARCH="-march=armv7-a"
     ABI_NAME=armv7-linux-androideabi
     COMPUTE_NAME=Kepler
+    LOCAL_ARM_NEON=true
+    ARCH_ARM_HAVE_NEON=true
 fi
 
     NVCC=`which nvcc`
@@ -65,6 +68,8 @@ echo "Android NDK found at: $ANDROID_NDK"
 cd "$(dirname "$0")" # switch to script directory
 SCRIPT_ROOT_DIR=`pwd`
 export INSTALL_DIR=$SCRIPT_ROOT_DIR/install
+mkdir -p ${INSTALL_DIR}/man
+
 echo "INSTALL_DIR=${INSTALL_DIR}"
 set +e # hard errors
 export CMAKE_INSTALL_SUBDIR="share/cmake/torch"
@@ -118,9 +123,20 @@ cd distro/extra/FindCUDA && \
 
 cd $SCRIPT_ROOT_DIR
 
-cd external && \
+cd external/libpng && \
     (cmake -E make_directory build && cd build && do_cmake_config .. && make install) \
-    && echo "externals installed" || exit 1
+    && echo "libpng installed" || exit 1
+cd $SCRIPT_ROOT_DIR
+
+#cd external/libjpeg-turbo && \
+#    (cmake -E make_directory build && cd build && do_cmake_config .. && make install) \
+#    && echo "libjpeg installed" || exit 1
+#cd $SCRIPT_ROOT_DIR
+
+#cd external/libjpeg-turbo && \
+#    (ndk-build NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=./Android.mk APP_ABI=${APP_ABI} LOCAL_ARM_MODE=arm \
+#     LOCAL_ARM_NEON=${LOCAL_ARM_NEON} ARCH_ARM_HAVE_NEON=${ARCH_ARM_HAVE_NEON}) \
+#    && echo "libjpeg installed" || exit 1
 
 cd $SCRIPT_ROOT_DIR
 # Build host luajit for minilua and buildvm

@@ -5,6 +5,6 @@
 [submodule "external/libpng"]
 	path = external/libpng
 	url = https://github.com/borisfom/platform_external_libpng
-[submodule "external/libjpeg"]
-	path = external/libjpeg
-	url = https://github.com/android/platform_external_jpeg
+[submodule "external/libjpeg-turbo"]
+	path = external/libjpeg-turbo
+	url = https://chromium.googlesource.com/chromium/deps/libjpeg_turbo
