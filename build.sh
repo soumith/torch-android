@@ -16,7 +16,7 @@ if [[ "$ARCH" == "v8" ]]; then
     APP_ABI=arm64-v8a
     M_ARCH=-march=armv8-a
     ABI_NAME=aarch64-linux-androideabi
-    COMPUTE_NAME=Maxwell+Tegra
+    COMPUTE_NAME="Maxwell+Tegra"
 elif [[ "$ARCH" == "v7n" ]]; then
     APP_ABI="armeabi-v7a with NEON"
     M_ARCH="-march=armv7-a"
@@ -24,16 +24,12 @@ elif [[ "$ARCH" == "v7n" ]]; then
     COMPUTE_NAME="Kepler+Tegra Maxwell+Tegra"
     LOCAL_ARM_NEON=true
     ARCH_ARM_HAVE_NEON=true
-elif [[ "$ARCH" == "v7" ]]; then
-    APP_ABI="armeabi-v7a"
-    M_ARCH="-march=armv7-a"
-    ABI_NAME=armv7-linux-androideabi
-    COMPUTE_NAME=Kepler
-    LOCAL_ARM_NEON=true
-    ARCH_ARM_HAVE_NEON=true
+else
+    echo "Unsupported Architecture: $ARCH"
+    exit 1
 fi
 
-    NVCC=`which nvcc`
+NVCC=`which nvcc`
 export MAKE=make
 export MAKEARGS=-j$(getconf _NPROCESSORS_ONLN)
 
@@ -74,30 +70,28 @@ echo "INSTALL_DIR=${INSTALL_DIR}"
 set +e # hard errors
 export CMAKE_INSTALL_SUBDIR="share/cmake/torch"
 NDK=$ANDROID_NDK
+TOOLCHAIN_VERSION=4.9
 
 if [[ "$ARCH" == "v8" ]]; then
-PREBUILT_PREFIX=aarch64-linux-android-
 NDK_SYSROOT=$NDK/platforms/android-$NDKABI/arch-arm64
-NDKVER=toolchains/aarch64-linux-android-4.9
-NDKARCH="$M_ARCH -Wl,--fix-cortex-a8"
+export HOST=aarch64-linux-android
 HOST_CC="gcc"
 else
-PREBUILT_PREFIX=arm-linux-androideabi-
+export HOST=arm-linux-androideabi
 NDK_SYSROOT=$NDK/platforms/android-$NDKABI/arch-arm
-NDKVER=toolchains/arm-linux-androideabi-4.9
-NDKARCH="$M_ARCH -mfloat-abi=softfp -Wl,--fix-cortex-a8"
+ANDROID_CFLAGS="-mfloat-abi=softfp  -fprefetch-loop-arrays"
 HOST_CC="gcc -m32"
 fi
 
-NDKF="--sysroot $NDK_SYSROOT"
-NDKVER=$NDK/$NDKVER
-
+ANDROID_CFLAGS="${M_ARCH} --sysroot ${NDK_SYSROOT} ${ANDROID_CFLAGS} -Wl,--fix-cortex-a8"
 
 if [[ "$unamestr" == 'Linux' ]]; then
-    export NDKP=$NDKVER/prebuilt/linux-x86_64/bin/${PREBUILT_PREFIX}
+    BUILD_PLATFORM=linux-x86_64
 elif [[ "$unamestr" == 'Darwin' ]]; then
-    export NDKP=$NDKVER/prebuilt/darwin-x86_64/bin/${PREBUILT_PREFIX}
+    BUILD_PLATFORM=darwin-x86_64
 fi
+
+export TOOLCHAIN="$NDK/toolchains/${HOST}-${TOOLCHAIN_VERSION}/prebuilt/${BUILD_PLATFORM}"
 
 export CUDA_SELECT_NVCC_ARCH_TARGETS="${COMPUTE_NAME}"
 
@@ -106,7 +100,7 @@ cmake $1 -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_TOOLCHAIN_FILE="$SCRIPT_ROOT_DIR/cm
     -DANDROID_NDK="${ANDROID_NDK}" -DANDROID_ABI="${APP_ABI}" \
     -DWITH_CUDA=${WITH_CUDA} -DWITH_LUAROCKS=OFF -DWITH_LUAJIT21=ON\
     -DCUDA_USE_STATIC_CUDA_RUNTIME=OFF -DANDROID_STL_FORCE_FEATURES=OFF\
-    -DANDROID_NATIVE_API_LEVEL=21 -DANDROID_STL=gnustl_shared\
+    -DANDROID_NATIVE_API_LEVEL="${NDKABI}" -DANDROID_STL=gnustl_shared\
     -DCMAKE_INSTALL_PREFIX="$INSTALL_DIR" -DCMAKE_INSTALL_SUBDIR="${CMAKE_INSTALL_SUBDIR}" \
     -DLIBRARY_OUTPUT_PATH_ROOT="${INSTALL_DIR}" \
     -DLUAJIT_SYSTEM_MINILUA="$SCRIPT_ROOT_DIR/distro/exe/luajit-rocks/luajit-2.1/src/host/minilua" \
@@ -129,21 +123,15 @@ cd external/libpng && \
 cd $SCRIPT_ROOT_DIR
 
 #cd external/libjpeg-turbo && \
-#    (cmake -E make_directory build && cd build && do_cmake_config .. && make install) \
+#    (cmake -E make_directory build && cd build && . ../../build-libjpeg.sh) \
 #    && echo "libjpeg installed" || exit 1
 #cd $SCRIPT_ROOT_DIR
 
-#cd external/libjpeg-turbo && \
-#    (ndk-build NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=./Android.mk APP_ABI=${APP_ABI} LOCAL_ARM_MODE=arm \
-#     LOCAL_ARM_NEON=${LOCAL_ARM_NEON} ARCH_ARM_HAVE_NEON=${ARCH_ARM_HAVE_NEON}) \
-#    && echo "libjpeg installed" || exit 1
-
-cd $SCRIPT_ROOT_DIR
 # Build host luajit for minilua and buildvm
 cd distro/exe/luajit-rocks/luajit-2.1
 
 # make clean
-$MAKE $MAKEARGS HOST_CC="$HOST_CC" CC="gcc" HOST_SYS=$unamestr TARGET_SYS=Linux CROSS=$NDKP TARGET_FLAGS="$NDKF $NDKARCH"
+$MAKE $MAKEARGS HOST_CC="$HOST_CC" CC="gcc" HOST_SYS=$unamestr TARGET_SYS=Linux CROSS="${TOOLCHAIN}/bin/${HOST}-" TARGET_FLAGS="$ANDROID_CFLAGS"
 
 echo "Done installing Lua"
 

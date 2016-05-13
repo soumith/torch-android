@@ -7,4 +7,4 @@
 	url = https://github.com/borisfom/platform_external_libpng
 [submodule "external/libjpeg-turbo"]
 	path = external/libjpeg-turbo
-	url = https://chromium.googlesource.com/chromium/deps/libjpeg_turbo
+	url = https://github.com/libjpeg-turbo/libjpeg-turbo
