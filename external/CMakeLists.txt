@@ -4,4 +4,4 @@ cmake_minimum_required(VERSION 2.8)
 SET(ARCH_ARM_HAVE_NEON true)
 ADD_SUBDIRECTORY(libpng)
 
-# ADD_SUBDIRECTORY(libjpeg)
+#ADD_SUBDIRECTORY(libjpeg)
