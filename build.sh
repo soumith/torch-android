@@ -33,7 +33,6 @@ NVCC=`which nvcc`
 export MAKE=make
 export MAKEARGS=-j$(getconf _NPROCESSORS_ONLN)
 
-
 ####################################################
 # You do not need to modify anything below this line
 ####################################################
