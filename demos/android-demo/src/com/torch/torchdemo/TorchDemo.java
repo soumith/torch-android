@@ -25,6 +25,7 @@ public class TorchDemo extends Activity
 
     @Override
     public void onStart()  {
+	super.onStart();
 	Log.d("torchdemo","onStart\n");
         Runnable r = new Runnable() {
                 public void run() {
