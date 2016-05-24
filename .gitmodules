@@ -1,7 +1,7 @@
 [submodule "distro"]
 	path = distro
 	url = https://github.com/borisfom/distro
-        branch = R5
+        branch = R4
 [submodule "external/libpng"]
 	path = external/libpng
 	url = https://github.com/borisfom/platform_external_libpng
