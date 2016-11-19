@@ -110,11 +110,12 @@ echo " -------------- Configuring DONE ---------------"
 
 cd $SCRIPT_ROOT_DIR
 
-cd distro/extra/FindCUDA && \
-    (cmake -E make_directory build && cd build && do_cmake_config .. && make install) \
-    && echo "FindCuda installed" || exit 1
-
-cd $SCRIPT_ROOT_DIR
+if [[ "$WITH_CUDA" == "ON" ]]; then
+    echo "Found CUDA on your machine. Installing CMake 3.6 modules to get up-to-date FindCUDA"
+    cd ${SCRIPT_ROOT_DIR}/distro/cmake/3.6 && \
+(cmake -E make_directory build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX="${INSTALL_DIR}" \
+        && make install) && echo "FindCuda bits of CMake 3.6 installed" || exit 1
+fi
 
 cd external/libpng && \
     (cmake -E make_directory build && cd build && do_cmake_config .. && make install) \
