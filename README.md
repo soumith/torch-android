@@ -27,9 +27,10 @@ Requirements
 For CUDA-enabled version: NVIDIA CodeWorks for Android: https://developer.nvidia.com/codeworks-android. 
 For CPU-only version : Android NDK and Android SDK 
 
-NOTE (Nov 2016): Android NDK v13b currently is required for NEON, even if you are building CUDA version with CodeWorks.
+* NOTE (Nov 2016): Android NDK v13b currently is required for NEON, even if you are building CUDA version with CodeWorks.
 This is due to some NDK bugs fixed in v13b - CodeWorks has 12b. NDK will only be used to build Lua JIT.
 Get it here: https://dl.google.com/android/repository/android-ndk-r13b-linux-x86_64.zip
+* NOTE (Nov 2016): For NEON ARM CPU, you need to work around CMake bug by setting NEON_FOUND file in build.sh
 
 Samples
 --------
