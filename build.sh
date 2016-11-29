@@ -4,8 +4,8 @@
 # optionally, modify the variables below as needed.
 NDKABI=21
 
-# Default architecture is V7+Neon
-ARCH=${ARCH:-"v7n"}
+# Default architecture is V8
+ARCH=${ARCH:-"v8"}
 
 # Default is to build with CUDA.
 # Make sure you installed https://developer.nvidia.com/codeworks-android.
@@ -92,11 +92,11 @@ fi
 
 export TOOLCHAIN="$NDK/toolchains/${HOST}-${TOOLCHAIN_VERSION}/prebuilt/${BUILD_PLATFORM}"
 
-export CUDA_SELECT_NVCC_ARCH_TARGETS="${COMPUTE_NAME}"
+export TORCH_CUDA_ARCH_LIST="${COMPUTE_NAME}"
 
 do_cmake_config() {
 cmake $1 -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_TOOLCHAIN_FILE="$SCRIPT_ROOT_DIR/cmake/android.toolchain.cmake" \
-    -DANDROID_NDK="${ANDROID_NDK}" -DANDROID_ABI="${APP_ABI}" \
+    -DANDROID_NDK="${ANDROID_NDK}" -DANDROID_ABI="${APP_ABI}" -DNEON_FOUND=ON\
     -DWITH_CUDA=${WITH_CUDA} -DWITH_LUAROCKS=OFF -DWITH_LUAJIT21=ON\
     -DCUDA_USE_STATIC_CUDA_RUNTIME=OFF -DANDROID_STL_FORCE_FEATURES=OFF\
     -DANDROID_NATIVE_API_LEVEL="${NDKABI}" -DANDROID_STL=gnustl_shared\
@@ -108,7 +108,6 @@ cmake $1 -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_TOOLCHAIN_FILE="$SCRIPT_ROOT_DIR/cm
 echo " -------------- Configuring DONE ---------------"
 }
 
-cd $SCRIPT_ROOT_DIR
 
 if [[ "$WITH_CUDA" == "ON" ]]; then
     echo "Found CUDA on your machine. Installing CMake 3.6 modules to get up-to-date FindCUDA"
@@ -116,6 +115,8 @@ if [[ "$WITH_CUDA" == "ON" ]]; then
 (cmake -E make_directory build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX="${INSTALL_DIR}" \
         && make install) && echo "FindCuda bits of CMake 3.6 installed" || exit 1
 fi
+
+cd $SCRIPT_ROOT_DIR
 
 cd external/libpng && \
     (cmake -E make_directory build && cd build && do_cmake_config .. && make install) \
