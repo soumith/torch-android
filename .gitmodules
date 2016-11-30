@@ -1,7 +1,7 @@
 [submodule "distro"]
 	path = distro
 	url = https://github.com/NVIDIA/torch-distro
-        branch = android
+        branch = type-redux
 [submodule "external/libpng"]
 	path = external/libpng
 	url = https://github.com/borisfom/platform_external_libpng
