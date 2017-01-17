@@ -82,7 +82,7 @@ ANDROID_CFLAGS="-mfloat-abi=softfp  -fprefetch-loop-arrays"
 HOST_CC="gcc -m32"
 fi
 
-ANDROID_CFLAGS="${M_ARCH} --sysroot ${NDK_SYSROOT} ${ANDROID_CFLAGS} -Wl,--fix-cortex-a8"
+ANDROID_CFLAGS="${M_ARCH} --sysroot ${NDK_SYSROOT} ${ANDROID_CFLAGS}"
 
 if [[ "$unamestr" == 'Linux' ]]; then
     BUILD_PLATFORM=linux-x86_64
@@ -96,7 +96,7 @@ export TORCH_CUDA_ARCH_LIST="${COMPUTE_NAME}"
 
 do_cmake_config() {
 cmake $1 -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_TOOLCHAIN_FILE="$SCRIPT_ROOT_DIR/cmake/android.toolchain.cmake" \
-    -DANDROID_NDK="${ANDROID_NDK}" -DANDROID_ABI="${APP_ABI}" -DNEON_FOUND=ON\
+    -DANDROID_NDK="${ANDROID_NDK}" -DANDROID_ABI="${APP_ABI}" \
     -DWITH_CUDA=${WITH_CUDA} -DWITH_LUAROCKS=OFF -DWITH_LUAJIT21=ON\
     -DCUDA_USE_STATIC_CUDA_RUNTIME=OFF -DANDROID_STL_FORCE_FEATURES=OFF\
     -DANDROID_NATIVE_API_LEVEL="${NDKABI}" -DANDROID_STL=gnustl_shared\

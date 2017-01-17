@@ -1324,7 +1324,7 @@ mark_as_advanced( ANDROID_NO_UNDEFINED ANDROID_SO_UNDEFINED ANDROID_FUNCTION_LEV
 # linker flags
 set( ANDROID_LINKER_FLAGS "" )
 
-if( ARMEABI_V7A )
+if( FALSE )
  # this is *required* to use the following linker flags that routes around
  # a CPU bug in some Cortex-A8 implementations:
  set( ANDROID_LINKER_FLAGS "${ANDROID_LINKER_FLAGS} -Wl,--fix-cortex-a8,--long-plt" )
