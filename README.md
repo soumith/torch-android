@@ -25,12 +25,15 @@ Features
 Requirements
 ------------
 For CUDA-enabled version: NVIDIA CodeWorks for Android: https://developer.nvidia.com/codeworks-android. 
-For CPU-only version : Android NDK and Android SDK 
+* NOTE: CodeWorks 1R5 does not have CUDA! You need to install 1R5 and then CUDA from 1R4.
+  
+For CPU-only version : Android NDK (13b) and Android SDK 
 
 * NOTE (Nov 2016): Android NDK v13b currently is required for NEON, even if you are building CUDA version with CodeWorks.
 This is due to some NDK bugs fixed in v13b - CodeWorks has 12b. NDK will only be used to build Lua JIT.
-Get it here: https://dl.google.com/android/repository/android-ndk-r13b-linux-x86_64.zip
-* NOTE (Nov 2016): For NEON ARM CPU, you need to work around CMake bug by setting NEON_FOUND file in build.sh
+  1. Get it here: https://dl.google.com/android/repository/android-ndk-r13b-linux-x86_64.zip.
+  2. Extract it under ~/NVPACK, next to 12b that comes with CodeWorks.
+  3. Change NVPACK environvent to point to that NDK (see sample in ./.bashrc-android)
 
 Samples
 --------
@@ -40,7 +43,7 @@ Samples
 * demos/android-demo-cifar showcases classifying Camera inputs (or images from gallery) into one of 10 CIFAR-10 categories.
 * Vinayak Ghokale from e-lab Purdue (https://github.com/e-lab) contributed a face detector demo, which showcases a fuller use-case (demos/facedetector_e-lab ).
 
-Building Torch-Android Libraries and Java class. 
+Building Torch Libraries and Java class. 
 --------------
 If on ubuntu, install the following packages: `sudo apt-get install libx32gcc-4.8-dev libc6-dev-i386`
 Default is to build with CUDA - so make sure you installed NVIDIA CodeWorks for Android and its nvcc is in your PATH.
@@ -53,11 +56,11 @@ Otherwise, set WITH_CUDA=OFF in build.sh
 
 You can use torch in your android apps. The relevant directories are
 * install/include - include directories
-* install/lib - static libs cross-compiled for armeabi-v7a
+* install/libs/$APP_ABI - static libs cross-compiled for your APP_ABI
 * install/share/lua - lua files
 
 
-Building Example
+Building Android Demo App 
 ----------------
 1. Build Torch-Android atleast once using the steps above.
 2. [Optional] Connect your android phone in debugging mode,
