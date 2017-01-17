@@ -1,0 +1,38 @@
+# This is modified version of environment set by NVIDIA CodeWorks environment:
+# 1. It makes proper use of quotes and macros
+# 2. It puts the new paths in front (!)
+# 3. It assumes the default CodeWorks installation root at ~/NVPACK.
+
+export NVPACK_ROOT="${HOME}/NVPACK"
+export ANDROID_HOME="${NVPACK_ROOT}/android-sdk-linux"
+
+export PATH="${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/build-tools:${ANDROID_HOME}/extras/android/support:$PATH"
+
+# WARNING: This may get outdated
+# As of Nov 2016: Android NDK r13b required for NEON.
+# This is due to some NDK bugs fixed in v13b - CodeWorks 1R5 has 12b.
+# This line assumes you have downloaded NDK r13b manually and extracted in under ~/NVPACK
+export NVPACK_NDK_VERSION="android-ndk-r13b"
+
+export NDK_ROOT="${NVPACK_ROOT}/${NVPACK_NDK_VERSION}"
+export NDKROOT="${NDK_ROOT}"
+
+export PATH="${NDK_ROOT}:$PATH"
+
+export NVPACK_NDK_TOOL_VERSION="4.9"
+export NDK_STANDALONE_46_ANDROID9_32="${NDK_ROOT}/standalone-toolchain-32"
+export NDK_STANDALONE_46_ANDROID9_64="${NDK_ROOT}/standalone-toolchain-64"
+
+export ANT_HOME="${NVPACK_ROOT}/apache-ant-1.8.2"
+export PATH="${ANT_HOME}/bin:$PATH"
+
+export GRADLE_HOME="${NVPACK_ROOT}/gradle-2.9"
+export PATH="${GRADLE_HOME}/bin:$PATH"
+
+
+export CUDA_ANDROID_HOME=${NVPACK_ROOT}/cuda-android-7.0
+
+export CUDA_TOOLKIT_ROOT="${NVPACK_ROOT}/cuda-7.0"
+export CUDA_TOOLKIT_ROOT_7_0=${CUDA_TOOLKIT_ROOT}
+
+export PATH="${CUDA_TOOLKIT_ROOT}/bin:$PATH"
