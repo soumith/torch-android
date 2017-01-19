@@ -4,6 +4,7 @@ if [ $? -ne 0 ]; then
     exit
 fi
 rm -rf assets/lua
+mkdir -p libs/armeabi-v7a/ libs/arm64-v8a/
 cp -r ../../install/share/lua assets/
 cp -r ../../install/libs/armeabi-v7a/*.so libs/armeabi-v7a/
 cp -r ../../install/libs/arm64-v8a/*.so libs/arm64-v8a/
