@@ -16,6 +16,11 @@ public class Torch
     public Torch(Context myContext) {
 	assetManager = myContext.getAssets();
         info = myContext.getApplicationInfo();
+        System.loadLibrary("cublas");
+        System.loadLibrary("THC");
+        System.loadLibrary("cutorch");
+        System.loadLibrary("THNN");
+        System.loadLibrary("THCUNN");
         System.loadLibrary("torchandroid");
 	Log.d("Torch","Torch() called\n");
     }
