@@ -5,7 +5,7 @@
 NDKABI=21
 
 # Default architecture is V8
-ARCH=${ARCH:-"v8"}
+ARCH=${ARCH:-"v7n"}
 
 # Default is to build with CUDA.
 # Make sure you installed https://developer.nvidia.com/codeworks-android.

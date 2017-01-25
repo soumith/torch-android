@@ -16,25 +16,31 @@ public class TorchDemo extends Activity
         super.onCreate(savedInstanceState);
 	Log.d("torchdemo","Hello from JAVA\n");
 
-        torch = new Torch(this);
+        torch = new Torch();
+	torch.setContext(this);
 	tv = new TextView(this);
-        tv.setText("Torch Created.");
+        tv.setText("Torch Created");
         setContentView(tv);
     }
 
+    private class TorchTask extends Torch.EvalAssetFileTask {
+	public TorchTask()
+	    {
+		torch.super();
+	    }
 
+	protected void onPostExecute(String result) {
+	    Log.d("onPostExecute, Torch returned: %s)\n", result);
+	    tv.setText(result);
+	    // setContentView(tv);
+	}
+    };
+   
     @Override
     public void onStart()  {
 	super.onStart();
 	Log.d("torchdemo","onStart\n");
-        Runnable r = new Runnable() {
-                public void run() {
-                    String returnFromC = torch.call("main.lua");
-                    tv.setText(returnFromC);
-                    //                    setContentView(tv);
-                }
-            };
-        r.run();
+	new TorchTask().execute("main.lua");
     }
 
     TextView tv;
