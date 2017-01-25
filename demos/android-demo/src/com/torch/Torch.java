@@ -36,7 +36,7 @@ public class Torch
 	    int count = lua.length;
 	    String response = "";
 	    for (int i = 0; i < count; i++) {
-		Log.d("doInBackground(%s)\n", lua[i]);
+		Log.d("Torch",  String.format("doInBackground(%s)\n", lua[i]));
 		response += evalAssetFile(lua[i]);
 	    }
 	    return response;
@@ -46,7 +46,7 @@ public class Torch
 	
 	// Todo: extract native method to evaluate Lua String
     private String evalAssetFile(String lua) {
-	Log.d("Torch.evalAssetFile(%s)\n", lua);
+	Log.d("Torch", String.format("Torch.evalAssetFile(%s)\n", lua));
 	return jni_call(assetManager, info.nativeLibraryDir, lua);
     }
 

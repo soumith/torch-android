@@ -5,6 +5,7 @@
 require 'torch'
 require 'cutorch'
 require 'cunn'
+-- require 'cudnn'
 require 'nnx'
 require 'dok'
 require 'image'
@@ -17,15 +18,21 @@ end
 
 print("Hello from Lua")
 
----
-print("Running cutorch.test()")
-cutorch.test()
+-- CuTorch test needs augmentation due to reduced type set.
+-- print("Running cutorch.test()")
+-- cutorch.test()
 
 
 print("Running cunn.test()")
-cunn.test()
+cunn.test('GPU')
+print("After cunn.test(GPU)")
 
--- nn.testcuda{'pointwise_forward'}
+-- nn.testcuda{'VolumetricConvolution_forward_batch'}
+-- cunn.test()
+--print("Running cudnn.test()")
+--cudnn.test()
+
+cunn.test('SpatialConvolutionLocal_forward_single')
 
 --- print('Running VolumetricConvolution_forward_batch:')
 --- nn.testcuda{'VolumetricConvolution_forward_batch'}

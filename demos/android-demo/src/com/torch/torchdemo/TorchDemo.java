@@ -30,7 +30,7 @@ public class TorchDemo extends Activity
 	    }
 
 	protected void onPostExecute(String result) {
-	    Log.d("onPostExecute, Torch returned: %s)\n", result);
+	    Log.d("torchdemo", String.format("onPostExecute, Torch returned: %s", result));
 	    tv.setText(result);
 	    // setContentView(tv);
 	}
